@@ -1,0 +1,189 @@
+plugins {
+	id 'java'
+	id 'war'
+	id 'org.springframework.boot' version '3.0.2'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.ssginc'
+version = '0.0.1-SNAPSHOT'
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+tasks.withType(ProcessResources) {
+	filteringCharset = 'UTF-8'
+}
+
+
+tasks.withType(Test) {
+	systemProperty 'file.encoding', 'UTF-8'
+}
+
+tasks.withType(JavaExec) {
+	systemProperty 'file.encoding', 'UTF-8'
+}
+
+tasks.withType(JavaExec) {
+	jvmArgs '-Dfile.encoding=UTF-8'
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	//************************************************************************
+	//  template engine-thymeleaf
+	//************************************************************************
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.2.0'
+
+	//************************************************************************
+	//  spring boot core
+	//************************************************************************
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	//************************************************************************
+	//  websocket
+	//************************************************************************
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	//************************************************************************
+	//  kafka
+	//************************************************************************
+	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'org.apache.kafka:kafka-streams'
+
+	//************************************************************************
+	//  db-jpa-mysql-mongodb-hikari
+	//************************************************************************
+	runtimeOnly 'mysql:mysql-connector-java:8.0.33' // 최신 버전 사용
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+	//************************************************************************
+	//  smtp
+	//************************************************************************
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	//************************************************************************
+	//  spring security
+	//************************************************************************
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'org.springframework.security:spring-security-crypto:6.0.0'
+
+	//************************************************************************
+	//  jwt
+	//************************************************************************
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+
+	//************************************************************************
+	//  redis
+	//************************************************************************
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-cache' // 캐싱 활용 가능
+
+	//************************************************************************
+	//  kurento
+	//************************************************************************
+	implementation 'org.kurento:kurento-client:7.1.0'
+	implementation 'org.kurento:kurento-utils-js:7.1.0'
+
+	//************************************************************************
+	//  module for html-js
+	//************************************************************************
+	implementation 'org.webjars:webjars-locator:0.52'
+	implementation 'org.webjars.bower:jquery:3.7.1'
+	implementation 'org.webjars.bower:bootstrap:5.3.3'
+	implementation 'org.webjars.bower:demo-console:1.5.1'
+	implementation 'org.webjars.bower:ekko-lightbox:5.2.0'
+	implementation 'org.webjars.bower:webrtc-adapter:7.4.0'
+
+	//************************************************************************
+	//  s3 sdk
+	//************************************************************************
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.13'
+
+	//************************************************************************
+	//  lombok
+	//************************************************************************
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	// SLF4J 및 Logback
+	implementation 'org.slf4j:slf4j-api:1.7.36'
+	implementation 'ch.qos.logback:logback-classic:1.2.11'
+
+	//************************************************************************
+	//  aho-corasick
+	//************************************************************************
+	implementation 'org.ahocorasick:ahocorasick:0.4.0'
+
+	///////////////////////////////////////////////////////////////////////////
+	//****************************************************************
+	// GoogleAuth 추가
+	//****************************************************************
+	//////////////////////////////////////////////////////////////////////////
+	implementation 'com.warrenstrange:googleauth:1.4.0'
+
+	//****************************************************************
+	// Spring Batch
+	//****************************************************************
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+	////////////////////////////////////////////////////////////////////////////
+	//************************************************************************
+	// Spring Boot Test
+	//************************************************************************
+	////////////////////////////////////////////////////////////////////////////
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.awaitility:awaitility:4.3.0'
+
+	////////////////////////////////////////////////////////////////////////////
+	//************************************************************************
+	//소셜 로그인 설정 추가
+	//************************************************************************
+	// 추가: Auth0 Java JWT
+	implementation 'com.auth0:java-jwt:4.2.1'
+	implementation 'org.apache.commons:commons-lang3'
+	implementation 'com.google.guava:guava:31.1-jre'
+	implementation 'net.pwall.json:jsonutil:5.0'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	////////////////////////////////////////////////////////////////////////////
+}
+
+tasks.named('bootBuildImage') {
+	builder = 'paketobuildpacks/builder-jammy-base:latest'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
