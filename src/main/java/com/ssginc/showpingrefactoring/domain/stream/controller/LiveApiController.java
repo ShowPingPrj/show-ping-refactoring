@@ -25,7 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/live")
 @RequiredArgsConstructor
-public class StreamApiController {
+public class LiveApiController {
 
     private final LiveService liveService;
 
