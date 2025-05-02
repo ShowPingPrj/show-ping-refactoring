@@ -2,8 +2,8 @@ package com.ssginc.showpingrefactoring.domain.stream.controller;
 
 import com.ssginc.showpingrefactoring.domain.chat.dto.ChatRoomResponseDto;
 import com.ssginc.showpingrefactoring.domain.chat.service.ChatRoomService;
-import com.ssginc.showpingrefactoring.domain.stream.dto.response.GetStreamProductInfoResponseDto;
-import com.ssginc.showpingrefactoring.domain.stream.service.StreamService;
+import com.ssginc.showpingrefactoring.domain.stream.dto.response.GetLiveProductInfoResponseDto;
+import com.ssginc.showpingrefactoring.domain.stream.service.LiveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class StreamPageController {
 
-    private final StreamService streamService;
+    private final LiveService liveService;
 
     private final ChatRoomService chatRoomService;
 
@@ -47,12 +47,12 @@ public class StreamPageController {
     @GetMapping("watch/{streamNo}")
     public String watch(@PathVariable Long streamNo, Model model) {
 
-        GetStreamProductInfoResponseDto streamProductInfo = streamService.getStreamProductInfo(streamNo);
+        GetLiveProductInfoResponseDto liveProductInfo = liveService.getStreamProductInfo(streamNo);
         ChatRoomResponseDto chatRoom = chatRoomService.findChatRoomByStreamNo(streamNo);
 
         // 가격 문자열에서 숫자와 소수점만 남김 (쉼표, 원 등의 문자는 제거)
-        String rawPrice = streamProductInfo.getProductPrice().replaceAll("[^\\d.]", "");
-        String rawSale = streamProductInfo.getProductSalePrice().replaceAll("[^\\d.]", "");
+        String rawPrice = liveProductInfo.getProductPrice().replaceAll("[^\\d.]", "");
+        String rawSale = liveProductInfo.getProductSalePrice().replaceAll("[^\\d.]", "");
 
         int price = Integer.parseInt(rawPrice);
         int sale = Integer.parseInt(rawSale);
@@ -63,7 +63,7 @@ public class StreamPageController {
         int discountRate = (price > 0) ? (discountAmount * 100) / price : 0;
 
         model.addAttribute("chatRoomInfo", chatRoom);
-        model.addAttribute("productInfo", streamProductInfo);
+        model.addAttribute("productInfo", liveProductInfo);
         model.addAttribute("discountRate", discountRate);
 
         return "stream/watch";

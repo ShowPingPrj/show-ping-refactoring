@@ -1,6 +1,6 @@
 package com.ssginc.showpingrefactoring.domain.stream.repository;
 
-import com.ssginc.showpingrefactoring.domain.stream.dto.object.GetStreamRegisterInfoDto;
+import com.ssginc.showpingrefactoring.domain.stream.dto.object.GetLiveRegisterInfoDto;
 import com.ssginc.showpingrefactoring.domain.stream.dto.response.StreamResponseDto;
 import com.ssginc.showpingrefactoring.domain.stream.entity.Stream;
 import org.springframework.data.domain.Page;
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface StreamRepository extends JpaRepository<Stream, Long> {
+public interface LiveRepository extends JpaRepository<Stream, Long> {
 
     /**
      * 진행중인 라이브 방송을 반환해주는 쿼리 메서드
@@ -67,6 +67,6 @@ public interface StreamRepository extends JpaRepository<Stream, Long> {
         FROM Stream s JOIN Product p ON s.product.productNo = p.productNo
         WHERE s.member.memberId = :memberId AND s.streamStatus = "STANDBY"
     """)
-    GetStreamRegisterInfoDto findStreamByMemberIdAndStreamStatus(String memberId);
+    GetLiveRegisterInfoDto findStreamByMemberIdAndStreamStatus(String memberId);
 
 }

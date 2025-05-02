@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-public class CreateStreamDto {
+public class CreateLiveDto {
 
     private Member member;
 

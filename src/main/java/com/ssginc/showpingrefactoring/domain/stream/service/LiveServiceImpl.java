@@ -4,16 +4,16 @@ import com.ssginc.showpingrefactoring.domain.member.entity.Member;
 import com.ssginc.showpingrefactoring.domain.member.repository.MemberRepository;
 import com.ssginc.showpingrefactoring.domain.product.repository.ProductRepository;
 import com.ssginc.showpingrefactoring.domain.product.entity.Product;
-import com.ssginc.showpingrefactoring.domain.stream.dto.object.CreateStreamDto;
-import com.ssginc.showpingrefactoring.domain.stream.dto.object.GetStreamRegisterInfoDto;
-import com.ssginc.showpingrefactoring.domain.stream.dto.request.RegisterStreamRequestDto;
-import com.ssginc.showpingrefactoring.domain.stream.dto.response.GetStreamProductInfoResponseDto;
-import com.ssginc.showpingrefactoring.domain.stream.dto.response.GetStreamRegisterInfoResponseDto;
-import com.ssginc.showpingrefactoring.domain.stream.dto.response.StartStreamResponseDto;
+import com.ssginc.showpingrefactoring.domain.stream.dto.object.CreateLiveDto;
+import com.ssginc.showpingrefactoring.domain.stream.dto.object.GetLiveRegisterInfoDto;
+import com.ssginc.showpingrefactoring.domain.stream.dto.request.RegisterLiveRequestDto;
+import com.ssginc.showpingrefactoring.domain.stream.dto.response.GetLiveProductInfoResponseDto;
+import com.ssginc.showpingrefactoring.domain.stream.dto.response.GetLiveRegisterInfoResponseDto;
+import com.ssginc.showpingrefactoring.domain.stream.dto.response.StartLiveResponseDto;
 import com.ssginc.showpingrefactoring.domain.stream.dto.response.StreamResponseDto;
 import com.ssginc.showpingrefactoring.domain.stream.entity.Stream;
 import com.ssginc.showpingrefactoring.domain.stream.entity.StreamStatus;
-import com.ssginc.showpingrefactoring.domain.stream.repository.StreamRepository;
+import com.ssginc.showpingrefactoring.domain.stream.repository.LiveRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,9 +27,9 @@ import java.util.Locale;
 
 @Slf4j
 @RequiredArgsConstructor
-public class StreamServiceImpl implements StreamService {
+public class LiveServiceImpl implements LiveService {
 
-    private final StreamRepository streamRepository;
+    private final LiveRepository liveRepository;
 
     private final ProductRepository productRepository;
 
@@ -40,8 +40,8 @@ public class StreamServiceImpl implements StreamService {
      * @param streamNo 시청하려는 방송 번호
      * @return 시청하려는 방송의 상품 정보
      */
-    public GetStreamProductInfoResponseDto getStreamProductInfo(Long streamNo){
-        Stream stream = streamRepository.findById(streamNo).orElseThrow(RuntimeException::new);
+    public GetLiveProductInfoResponseDto getStreamProductInfo(Long streamNo){
+        Stream stream = liveRepository.findById(streamNo).orElseThrow(RuntimeException::new);
         Product product = stream.getProduct();
 
         // 상품의 원래 가격
@@ -63,7 +63,7 @@ public class StreamServiceImpl implements StreamService {
         String formattedSalePrice = nf.format(productSalePrice) + "원";
 
 
-        return GetStreamProductInfoResponseDto.builder()
+        return GetLiveProductInfoResponseDto.builder()
                 .productNo(product.getProductNo())
                 .productImg(product.getProductImg())
                 .productName(product.getProductName())
@@ -78,7 +78,7 @@ public class StreamServiceImpl implements StreamService {
      */
     @Override
     public StreamResponseDto getLive() {
-        List<StreamResponseDto> liveList = streamRepository.findLive();
+        List<StreamResponseDto> liveList = liveRepository.findLive();
         return liveList.isEmpty() ? null : liveList.get(0);
     }
 
@@ -89,7 +89,7 @@ public class StreamServiceImpl implements StreamService {
      */
     @Override
     public Page<StreamResponseDto> getAllBroadCastByPage(Pageable pageable) {
-        return streamRepository.findAllBroadCastByPage(pageable);
+        return liveRepository.findAllBroadCastByPage(pageable);
     }
 
     /**
@@ -99,7 +99,7 @@ public class StreamServiceImpl implements StreamService {
      */
     @Override
     public Page<StreamResponseDto> getAllStandbyByPage(Pageable pageable) {
-        return streamRepository.findAllStandbyByPage(pageable);
+        return liveRepository.findAllStandbyByPage(pageable);
     }
 
     /**
@@ -109,7 +109,7 @@ public class StreamServiceImpl implements StreamService {
      * @return 생성 혹은 수정된 방송의 방송 번호
      */
     @Override
-    public Long createStream(String memberId, RegisterStreamRequestDto request) {
+    public Long createStream(String memberId, RegisterLiveRequestDto request) {
         // 생성 혹은 수정된 streamNo
         Long responseStreamNo;
         Product product = productRepository.findById(request.getProductNo()).orElseThrow(RuntimeException::new);
@@ -123,7 +123,7 @@ public class StreamServiceImpl implements StreamService {
         Long streamNo = request.getStreamNo();
         // 기존에 등록된 방송 정보가 있는 경우 방송 데이터를 수정
         if (streamNo != null) {
-            Stream stream = streamRepository.findById(streamNo).orElseThrow(RuntimeException::new);
+            Stream stream = liveRepository.findById(streamNo).orElseThrow(RuntimeException::new);
 
             stream.setStreamTitle(request.getStreamTitle());
             stream.setStreamDescription(request.getStreamDescription());
@@ -136,11 +136,11 @@ public class StreamServiceImpl implements StreamService {
 
             stream.setStreamEnrollTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
 
-            responseStreamNo = streamRepository.save(stream).getStreamNo();
+            responseStreamNo = liveRepository.save(stream).getStreamNo();
         } else {    // 기존에 등록된 방송 정보가 없는 경우 새로 방송 데이터를 생성
             Member member = memberRepository.findByMemberId(memberId).orElseThrow(RuntimeException::new);
 
-            CreateStreamDto stream = CreateStreamDto.builder()
+            CreateLiveDto stream = CreateLiveDto.builder()
                     .member(member)
                     .product(product)
                     .streamTitle(request.getStreamTitle())
@@ -152,7 +152,7 @@ public class StreamServiceImpl implements StreamService {
             // 할인율 적용
             product.setProductSale(productSale);
 
-            responseStreamNo = streamRepository.save(stream.toEntity()).getStreamNo();
+            responseStreamNo = liveRepository.save(stream.toEntity()).getStreamNo();
         }
 
         return responseStreamNo;
@@ -163,22 +163,22 @@ public class StreamServiceImpl implements StreamService {
      * @param streamNo 시작하려는 방송 번호
      * @return 시작한 방송에 대한 정보
      */
-    public StartStreamResponseDto startStream(Long streamNo) {
-        Stream stream = streamRepository.findById(streamNo).orElseThrow(RuntimeException::new);
+    public StartLiveResponseDto startStream(Long streamNo) {
+        Stream stream = liveRepository.findById(streamNo).orElseThrow(RuntimeException::new);
 
         // 방송 시작 시간 설정
         stream.setStreamStartTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
         // 방송 상태 송출 중으로 변경
         stream.setStreamStatus(StreamStatus.ONAIR);
 
-        stream = streamRepository.save(stream);
+        stream = liveRepository.save(stream);
 
         Product product = stream.getProduct();
         // 천 단위 구분 포맷팅
         NumberFormat nf = NumberFormat.getInstance(Locale.KOREA);
         String formattedPrice = nf.format(product.getProductPrice()) + "원";
 
-        return StartStreamResponseDto.builder()
+        return StartLiveResponseDto.builder()
                 .streamTitle(stream.getStreamTitle())
                 .streamDescription(stream.getStreamDescription())
                 .productImg(product.getProductImg())
@@ -195,7 +195,7 @@ public class StreamServiceImpl implements StreamService {
      * @return 방송 종료 설정 적용 여부
      */
     public Boolean stopStream(Long streamNo) {
-        Stream stream = streamRepository.findById(streamNo).orElseThrow(RuntimeException::new);
+        Stream stream = liveRepository.findById(streamNo).orElseThrow(RuntimeException::new);
 
         // 방송 종료 시간 설정
         stream.setStreamEndTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
@@ -204,7 +204,7 @@ public class StreamServiceImpl implements StreamService {
         // 해당 방송의 상품의 할인율 0으로 변경(할인 종료)
         stream.getProduct().setProductSale(0);
 
-        stream = streamRepository.save(stream);
+        stream = liveRepository.save(stream);
 
         if (stream.getStreamEndTime() != null && stream.getStreamStatus() == StreamStatus.ENDED && stream.getProduct().getProductSale() == 0) {
             return true;
@@ -219,9 +219,9 @@ public class StreamServiceImpl implements StreamService {
      * @return GetStreamRegisterInfoDto 로그인한 회원으로 등록된 방송 정보
      */
     @Override
-    public GetStreamRegisterInfoResponseDto getStreamRegisterInfo(String memberId) {
+    public GetLiveRegisterInfoResponseDto getStreamRegisterInfo(String memberId) {
         try {
-            GetStreamRegisterInfoDto streamInfo = streamRepository.findStreamByMemberIdAndStreamStatus(memberId);
+            GetLiveRegisterInfoDto streamInfo = liveRepository.findStreamByMemberIdAndStreamStatus(memberId);
 
             if (streamInfo == null) {
                 throw new RuntimeException("해당 회원으로 등록된 방송 정보가 없습니다.");
@@ -230,7 +230,7 @@ public class StreamServiceImpl implements StreamService {
             NumberFormat nf = NumberFormat.getInstance(Locale.KOREA);
             String formattedPrice = nf.format(streamInfo.getProductPrice()) + "원";
 
-            return GetStreamRegisterInfoResponseDto.builder()
+            return GetLiveRegisterInfoResponseDto.builder()
                     .streamNo(streamInfo.getStreamNo())
                     .streamTitle(streamInfo.getStreamTitle())
                     .streamDescription(streamInfo.getStreamDescription())

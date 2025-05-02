@@ -10,7 +10,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetStreamRegisterInfoDto {
+public class GetLiveRegisterInfoDto {
 
     private Long streamNo;
 

@@ -3,7 +3,7 @@ package com.ssginc.showpingrefactoring.domain.stream.dto.request;
 import lombok.Getter;
 
 @Getter
-public class StreamRequestDto {
+public class LiveRequestDto {
 
     private Long streamNo;
 
