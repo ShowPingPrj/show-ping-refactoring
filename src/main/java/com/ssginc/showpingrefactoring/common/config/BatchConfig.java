@@ -1,7 +1,7 @@
 package com.ssginc.showpingrefactoring.common.config;
 
-import com.ssginc.showpingrefactoring.vod.service.HlsService;
-import com.ssginc.showpingrefactoring.vod.service.SubtitleService;
+import com.ssginc.showpingrefactoring.domain.stream.service.HlsService;
+import com.ssginc.showpingrefactoring.domain.stream.service.SubtitleService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;

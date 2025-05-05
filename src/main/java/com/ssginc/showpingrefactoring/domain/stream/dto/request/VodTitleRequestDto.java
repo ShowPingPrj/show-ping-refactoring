@@ -1,4 +1,4 @@
-package com.ssginc.showpingrefactoring.vod.dto.request;
+package com.ssginc.showpingrefactoring.domain.stream.dto.request;
 
 import lombok.Getter;
 
@@ -7,7 +7,7 @@ import lombok.Getter;
  * <p>
  */
 @Getter
-public class FileRequestDto {
+public class VodTitleRequestDto {
 
     private String fileTitle;
 
