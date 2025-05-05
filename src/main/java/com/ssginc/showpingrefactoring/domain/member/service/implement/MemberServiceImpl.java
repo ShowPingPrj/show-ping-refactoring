@@ -11,6 +11,7 @@ import com.ssginc.showpingrefactoring.common.exception.ErrorCode;
 import com.ssginc.showpingrefactoring.domain.member.repository.MemberRepository;
 import com.ssginc.showpingrefactoring.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,12 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final Map<String, Boolean> verifiedEmailStorage = new HashMap<>();
+
+    @Override
+    public Member findMemberById(String memberId) {
+        return memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + memberId));
+    }
 
     @Override
     public void signup(SignupRequestDto request) {
@@ -61,6 +68,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return new MemberDto(
+                member.getMemberNo(),
                 member.getMemberId(),
                 member.getMemberName(),
                 member.getMemberEmail(),

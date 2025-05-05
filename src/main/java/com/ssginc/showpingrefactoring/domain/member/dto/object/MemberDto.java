@@ -8,6 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 public class MemberDto {
     private Long memberNo;
     private String memberId;
