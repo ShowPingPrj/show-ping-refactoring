@@ -1,4 +1,4 @@
-package com.ssginc.showpingrefactoring.batch.config;
+package com.ssginc.showpingrefactoring.common.config;
 
 import com.ssginc.showpingrefactoring.vod.service.HlsService;
 import com.ssginc.showpingrefactoring.vod.service.SubtitleService;

@@ -1,4 +1,4 @@
-package com.ssginc.showpingrefactoring.batch.controller;
+package com.ssginc.showpingrefactoring.common.controller;
 
 import com.ssginc.showpingrefactoring.vod.dto.request.FileRequestDto;
 import lombok.RequiredArgsConstructor;
