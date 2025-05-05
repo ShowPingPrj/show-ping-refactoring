@@ -1,7 +1,7 @@
-package com.ssginc.showpingrefactoring.vod.service.implement;
+package com.ssginc.showpingrefactoring.domain.stream.service.implement;
 
-import com.ssginc.showpingrefactoring.vod.infrastructure.storage.StorageLoader;
-import com.ssginc.showpingrefactoring.vod.service.HlsService;
+import com.ssginc.showpingrefactoring.domain.stream.infrastructure.storage.StorageLoader;
+import com.ssginc.showpingrefactoring.domain.stream.service.HlsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

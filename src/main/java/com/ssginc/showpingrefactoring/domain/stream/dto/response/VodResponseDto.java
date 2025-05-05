@@ -1,4 +1,4 @@
-package com.ssginc.showpingrefactoring.vod.dto.response;
+package com.ssginc.showpingrefactoring.domain.stream.dto.response;
 
 import lombok.*;
 

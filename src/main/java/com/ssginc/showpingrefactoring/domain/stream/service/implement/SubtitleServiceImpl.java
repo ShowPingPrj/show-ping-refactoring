@@ -1,11 +1,11 @@
-package com.ssginc.showpingrefactoring.vod.service.implement;
+package com.ssginc.showpingrefactoring.domain.stream.service.implement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.ssginc.showpingrefactoring.vod.infrastructure.storage.StorageLoader;
-import com.ssginc.showpingrefactoring.vod.infrastructure.subtitle.Segments;
-import com.ssginc.showpingrefactoring.vod.infrastructure.subtitle.SubtitleGenerator;
-import com.ssginc.showpingrefactoring.vod.service.SubtitleService;
+import com.ssginc.showpingrefactoring.domain.stream.infrastructure.storage.StorageLoader;
+import com.ssginc.showpingrefactoring.domain.stream.infrastructure.subtitle.Segments;
+import com.ssginc.showpingrefactoring.domain.stream.infrastructure.subtitle.SubtitleGenerator;
+import com.ssginc.showpingrefactoring.domain.stream.service.SubtitleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;

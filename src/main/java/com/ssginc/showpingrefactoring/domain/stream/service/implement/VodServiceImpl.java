@@ -1,9 +1,9 @@
-package com.ssginc.showpingrefactoring.vod.service.implement;
+package com.ssginc.showpingrefactoring.domain.stream.service.implement;
 
-import com.ssginc.showpingrefactoring.vod.dto.response.VodResponseDto;
-import com.ssginc.showpingrefactoring.vod.infrastructure.storage.StorageLoader;
-import com.ssginc.showpingrefactoring.vod.repository.VodRepository;
-import com.ssginc.showpingrefactoring.vod.service.VodService;
+import com.ssginc.showpingrefactoring.domain.stream.dto.response.VodResponseDto;
+import com.ssginc.showpingrefactoring.domain.stream.infrastructure.storage.StorageLoader;
+import com.ssginc.showpingrefactoring.domain.stream.repository.VodRepository;
+import com.ssginc.showpingrefactoring.domain.stream.service.VodService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,6 +1,6 @@
-package com.ssginc.showpingrefactoring.vod.service;
+package com.ssginc.showpingrefactoring.domain.stream.service;
 
-import com.ssginc.showpingrefactoring.vod.dto.response.VodResponseDto;
+import com.ssginc.showpingrefactoring.domain.stream.dto.response.VodResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

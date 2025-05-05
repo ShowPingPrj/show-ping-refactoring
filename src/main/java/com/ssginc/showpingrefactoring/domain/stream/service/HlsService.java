@@ -1,4 +1,4 @@
-package com.ssginc.showpingrefactoring.vod.service;
+package com.ssginc.showpingrefactoring.domain.stream.service;
 
 import org.springframework.core.io.Resource;
 import reactor.core.publisher.Mono;

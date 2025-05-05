@@ -1,6 +1,6 @@
-package com.ssginc.showpingrefactoring.vod.controller;
+package com.ssginc.showpingrefactoring.domain.stream.controller;
 
-import com.ssginc.showpingrefactoring.vod.service.HlsService;
+import com.ssginc.showpingrefactoring.domain.stream.service.HlsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;

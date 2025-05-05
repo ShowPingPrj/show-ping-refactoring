@@ -1,6 +1,6 @@
 package com.ssginc.showpingrefactoring.common.controller;
 
-import com.ssginc.showpingrefactoring.vod.dto.request.FileRequestDto;
+import com.ssginc.showpingrefactoring.domain.stream.dto.request.VodTitleRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -29,12 +29,12 @@ public class BatchController {
 
     /**
      * HLS 저장 작업을 실행하는 컨트롤러 메서드
-     * @param fileRequestDto 파일 요청 DTO (파일 제목 포함)
+     * @param vodTitleRequestDto 파일 요청 DTO (파일 제목 포함)
      * @return 작업 실행 ID를 포함한 ResponseEntity
      */
     @PostMapping("/hls/create")
-    public ResponseEntity<String> createHLS(@RequestBody FileRequestDto fileRequestDto) throws Exception {
-        String title = fileRequestDto.getFileTitle();
+    public ResponseEntity<String> createHLS(@RequestBody VodTitleRequestDto vodTitleRequestDto) throws Exception {
+        String title = vodTitleRequestDto.getFileTitle();
         JobParameters params = new JobParametersBuilder()
                 .addString("title", title)
                 .addLong("timestamp", System.currentTimeMillis())
@@ -47,12 +47,12 @@ public class BatchController {
 
     /**
      * 자막 생성 작업을 실행하는 컨트롤러 메서드
-     * @param fileRequestDto 파일 요청 DTO (파일 제목 포함)
+     * @param vodTitleRequestDto 파일 요청 DTO (파일 제목 포함)
      * @return 작업 실행 ID를 포함한 ResponseEntity
      */
     @PostMapping("/subtitle/create")
-    public ResponseEntity<String> createSubtitle(@RequestBody FileRequestDto fileRequestDto) throws Exception {
-        String title = fileRequestDto.getFileTitle();
+    public ResponseEntity<String> createSubtitle(@RequestBody VodTitleRequestDto vodTitleRequestDto) throws Exception {
+        String title = vodTitleRequestDto.getFileTitle();
         JobParameters params = new JobParametersBuilder()
                 .addString("title", title)
                 .addLong("timestamp", System.currentTimeMillis())

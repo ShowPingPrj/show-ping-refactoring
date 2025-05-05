@@ -1,8 +1,8 @@
-package com.ssginc.showpingrefactoring.vod.controller;
+package com.ssginc.showpingrefactoring.domain.stream.controller;
 
-import com.ssginc.showpingrefactoring.vod.dto.response.VodResponseDto;
-import com.ssginc.showpingrefactoring.vod.service.SubtitleService;
-import com.ssginc.showpingrefactoring.vod.service.VodService;
+import com.ssginc.showpingrefactoring.domain.stream.dto.response.VodResponseDto;
+import com.ssginc.showpingrefactoring.domain.stream.service.SubtitleService;
+import com.ssginc.showpingrefactoring.domain.stream.service.VodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
