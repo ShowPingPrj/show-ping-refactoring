@@ -1,6 +1,7 @@
-package com.ssginc.showpingrefactoring.vod.repository;
+package com.ssginc.showpingrefactoring.domain.watch.repository;
 
-import com.ssginc.showpingrefactoring.vod.dto.response.WatchResponseDto;
+import com.ssginc.showpingrefactoring.domain.watch.dto.resopnse.WatchResponseDto;
+import com.ssginc.showpingrefactoring.domain.watch.entity.Watch;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

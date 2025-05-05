@@ -1,10 +1,15 @@
-package com.ssginc.showpingrefactoring.vod.controller;
+package com.ssginc.showpingrefactoring.domain.watch.controller;
 
-import com.ssginc.showpingrefactoring.vod.dto.request.WatchRequestDto;
-import com.ssginc.showpingrefactoring.vod.dto.response.VodResponseDto;
-import com.ssginc.showpingrefactoring.vod.dto.response.WatchResponseDto;
-import com.ssginc.showpingrefactoring.vod.service.VodService;
-import com.ssginc.showpingrefactoring.vod.service.WatchService;
+import com.ssginc.showpingrefactoring.domain.member.entity.Member;
+import com.ssginc.showpingrefactoring.domain.member.service.MemberService;
+import com.ssginc.showpingrefactoring.domain.stream.dto.response.GetLiveProductInfoResponseDto;
+import com.ssginc.showpingrefactoring.domain.stream.service.LiveService;
+import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchRequestDto;
+import com.ssginc.showpingrefactoring.domain.watch.entity.Watch;
+import com.ssginc.showpingrefactoring.domain.stream.dto.response.VodResponseDto;
+import com.ssginc.showpingrefactoring.domain.watch.dto.resopnse.WatchResponseDto;
+import com.ssginc.showpingrefactoring.domain.stream.service.VodService;
+import com.ssginc.showpingrefactoring.domain.watch.service.WatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,7 +32,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class WatchController {
 
-    private final StreamService streamService;
+    private final LiveService streamService;
 
     private final VodService vodService;
 
@@ -42,7 +47,7 @@ public class WatchController {
      * @param model 타임리프에 전달할 Model 객체
      * @return 라이브 메인 페이지 (타임리프)
      */
-    @GetMapping("/vod/{streamNo}")
+    @GetMapping("/{streamNo}")
     public String watchVod(@AuthenticationPrincipal UserDetails userDetails,
                            @PathVariable Long streamNo,
                            Model model) {
@@ -55,7 +60,7 @@ public class WatchController {
             model.addAttribute("member", new Member());
         }
 
-        GetStreamProductInfoResponseDto streamProductInfo = streamService.getStreamProductInfo(streamNo);
+        GetLiveProductInfoResponseDto streamProductInfo = streamService.getStreamProductInfo(streamNo);
 
         // VOD 객체 정보 불러오기
         VodResponseDto vodDto = vodService.getVodByNo(streamNo);

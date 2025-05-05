@@ -1,9 +1,12 @@
-package com.ssginc.showpingrefactoring.vod.service.implement;
+package com.ssginc.showpingrefactoring.domain.watch.service.implement;
 
-import com.ssginc.showpingrefactoring.vod.dto.request.WatchRequestDto;
-import com.ssginc.showpingrefactoring.vod.dto.response.WatchResponseDto;
-import com.ssginc.showpingrefactoring.vod.repository.WatchRepository;
-import com.ssginc.showpingrefactoring.vod.service.WatchService;
+import com.ssginc.showpingrefactoring.domain.member.entity.Member;
+import com.ssginc.showpingrefactoring.domain.stream.entity.Stream;
+import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchRequestDto;
+import com.ssginc.showpingrefactoring.domain.watch.dto.resopnse.WatchResponseDto;
+import com.ssginc.showpingrefactoring.domain.watch.entity.Watch;
+import com.ssginc.showpingrefactoring.domain.watch.repository.WatchRepository;
+import com.ssginc.showpingrefactoring.domain.watch.service.WatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

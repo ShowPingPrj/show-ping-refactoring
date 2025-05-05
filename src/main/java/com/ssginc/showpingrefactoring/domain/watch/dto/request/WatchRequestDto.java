@@ -1,4 +1,4 @@
-package com.ssginc.showpingrefactoring.vod.dto.request;
+package com.ssginc.showpingrefactoring.domain.watch.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
