@@ -3,15 +3,15 @@ package com.ssginc.showpingrefactoring.domain.member.service.implement;
 
 import com.ssginc.showpingrefactoring.domain.member.entity.Member;
 import com.ssginc.showpingrefactoring.domain.member.entity.MemberRole;
-import com.ssginc.showpingrefactoring.domain.member.dto.SignupRequestDto;
-import com.ssginc.showpingrefactoring.domain.member.dto.UpdateMemberRequestDto;
-import com.ssginc.showpingrefactoring.domain.member.dto.MemberDto;
+import com.ssginc.showpingrefactoring.domain.member.dto.request.SignupRequestDto;
+import com.ssginc.showpingrefactoring.domain.member.dto.request.UpdateMemberRequestDto;
+import com.ssginc.showpingrefactoring.domain.member.dto.object.MemberDto;
 import com.ssginc.showpingrefactoring.common.exception.CustomException;
 import com.ssginc.showpingrefactoring.common.exception.ErrorCode;
 import com.ssginc.showpingrefactoring.domain.member.repository.MemberRepository;
-import com.ssginc.showpingrefactoring.domain.member.service.MailService;
 import com.ssginc.showpingrefactoring.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +25,12 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final Map<String, Boolean> verifiedEmailStorage = new HashMap<>();
+
+    @Override
+    public Member findMemberById(String memberId) {
+        return memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + memberId));
+    }
 
     @Override
     public void signup(SignupRequestDto request) {
@@ -62,6 +68,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return new MemberDto(
+                member.getMemberNo(),
                 member.getMemberId(),
                 member.getMemberName(),
                 member.getMemberEmail(),
