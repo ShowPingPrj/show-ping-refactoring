@@ -13,7 +13,7 @@ function loadWatchHistory(accessToken) {
         'Authorization': 'Bearer ' + accessToken
     };
 
-    axios.get(`/watch/history/list`, {
+    axios.get(`/api/watch/history/list`, {
         headers: header
     })
         .then(response => {
