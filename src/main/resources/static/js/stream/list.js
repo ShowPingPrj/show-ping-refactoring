@@ -289,7 +289,7 @@ function loadStandBy(pageNo) {
 
 function loadVod(pageNo) {
     // 현재 페이지의 VOD 목록 불러오기
-    axios.get('/stream/vod/list/page', {
+    axios.get('/api/vod/list/page', {
         params: {
             pageNo: pageNo
         }
@@ -354,7 +354,7 @@ function loadVod(pageNo) {
 }
 
 function loadVodByCategory(categoryNo, pageNo) {
-    axios.get(`/stream/vod/category`, {
+    axios.get(`/api/vod/list/category`, {
         params: {
             categoryNo: categoryNo,
             pageNo: pageNo,

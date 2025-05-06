@@ -159,7 +159,7 @@ function addWatch(streamNo) {
     const accessToken = sessionStorage.getItem('accessToken');
     const watchTime = new Date();
 
-    axios.post('/watch/insert',
+    axios.post('/api/watch/insert',
         {
             streamNo: streamNo,
             watchTime: watchTime
@@ -176,7 +176,7 @@ function fetchSubtitle(title) {
     track.mode = "disabled";
 
     // axios 활용 자막정보 가져오기
-    axios.get(`/stream/subtitle/${title}.json`)
+    axios.get(`/api/vod/subtitle/${title}.json`)
         .then(response => response.data)
         .then(data => {
             // segment 별로 TextTrack 추가
@@ -201,10 +201,10 @@ function msToSeconds(ms) {
 async function streamVideo(title) {
     if (Hls.isSupported()) {
         var hls = new Hls();
-        hls.loadSource(`/vod/v2/flux/${title}.m3u8`);
+        hls.loadSource(`/api/hls/v2/${title}.m3u8`);
         hls.attachMedia(videoElement);
     } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-        videoElement.src = `/vod/v2/flux/${title}.m3u8`;
+        videoElement.src = `/api/hls/v2/${title}.m3u8`;
     }
 }
 
