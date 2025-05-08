@@ -2,7 +2,7 @@ package com.ssginc.showpingrefactoring.domain.report.service.implement;
 
 import com.ssginc.showpingrefactoring.domain.report.dto.object.ForbiddenWord;
 import com.ssginc.showpingrefactoring.domain.report.repository.ForbiddenWordRepository;
-import com.ssginc.showpingrefactoring.chat.service.ForbiddenWordFilterService;
+import com.ssginc.showpingrefactoring.domain.report.service.ForbiddenWordFilterService;
 import lombok.RequiredArgsConstructor;
 import org.ahocorasick.trie.Emit;
 import org.ahocorasick.trie.Trie;
