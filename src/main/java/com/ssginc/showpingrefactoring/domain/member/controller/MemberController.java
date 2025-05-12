@@ -2,7 +2,6 @@ package com.ssginc.showpingrefactoring.domain.member.controller;
 
 import com.ssginc.showpingrefactoring.common.jwt.JwtTokenProvider;
 import com.ssginc.showpingrefactoring.domain.member.dto.object.MemberDto;
-import com.ssginc.showpingrefactoring.domain.member.dto.request.EmailRequestDto;
 import com.ssginc.showpingrefactoring.domain.member.dto.request.EmailVerifyRequestDto;
 import com.ssginc.showpingrefactoring.domain.member.dto.request.SignupRequestDto;
 import com.ssginc.showpingrefactoring.domain.member.dto.request.UpdateMemberRequestDto;
@@ -79,22 +78,15 @@ public class MemberController {
         throw new RuntimeException("No Authorization Header Found");
     }
 
-    @PostMapping("/email/send-code")
-    public ResponseEntity<String> sendVerificationCode(@RequestBody EmailRequestDto request) {
-        mailService.sendSignupVerificationCode(request.getEmail());
-        return ResponseEntity.ok("인증 코드가 이메일로 발송되었습니다.");
+    // 이메일 인증 코드 보내기
+    @PostMapping("/send-code")
+    public String sendCode(@RequestBody EmailVerifyRequestDto mailDto) {
+        return mailService.sendVerificationCode(mailDto.getEmail());
     }
 
-    @PostMapping("/email/verify-code")
-    public ResponseEntity<String> verifyCode(@RequestBody EmailVerifyRequestDto request) {
-        boolean isValid = mailService.verifySignupCode(request.getEmail(), request.getCode());
-
-        if (isValid) {
-            // 이메일 인증 성공 기록 (임시 저장소)
-            verifiedEmailStorage.put(request.getEmail(), true);
-            return ResponseEntity.ok("인증 성공");
-        } else {
-            return ResponseEntity.badRequest().body("인증 실패: 잘못된 코드입니다.");
-        }
+    // 인증 코드 확인하기
+    @PostMapping("/verify-code")
+    public boolean verifyCode(@RequestBody EmailVerifyRequestDto mailDto) {
+        return mailService.verifyCode(mailDto.getEmail(), mailDto.getEmailCode());
     }
 }
