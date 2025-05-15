@@ -40,12 +40,8 @@ async function login(event) {
 
         console.log("로그인 응답:", response.data);
 
-        if (response.data.status === "LOGIN_SUCCESS") {
-            console.log("로그인 성공!");
-            if (response.data.accessToken) {
-                sessionStorage.setItem("accessToken", response.data.accessToken);
-                console.log("Access Token 저장 완료:", sessionStorage.getItem("accessToken"));
-            }
+        if (response.data.accessToken) {
+            sessionStorage.setItem("accessToken", response.data.accessToken);
 
             setTimeout(() => {
                 window.location.href = "/";
@@ -57,6 +53,14 @@ async function login(event) {
         console.error("로그인 요청 실패:", error.response ? error.response.data : error);
         alert("로그인 실패! 아이디 또는 비밀번호를 확인하세요.");
     }
+}
+
+// 뒤로가기 방지 함수
+function preventBackNavigation() {
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
 }
 // ✅ TOTP (2단계 인증) 검증 함수
 // async function verifyTOTP(event) {
@@ -102,12 +106,4 @@ async function login(event) {
 //             text: 'QR 코드 로드 중 오류 발생!'
 //         });
 //     }
-// }
-
-// 🔹 뒤로가기 방지 함수
-// function preventBackNavigation() {
-//     history.pushState(null, null, location.href);
-//     window.onpopstate = function () {
-//         history.go(1);
-//     };
 // }
