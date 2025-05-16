@@ -561,13 +561,13 @@ function onLiveError(error) {
 function uploadFileToNCP() {
     let title = "stream_" + streamNo + "_" + document.getElementById('broadcastTitle').value;
     let fileName = title + ".mp4";
-    axios.post('/stream/vod/upload', {
+    axios.post('/api/vod/upload', {
         title: fileName
     })
-        .then(() => axios.post('/batch/hls/create', {
+        .then(() => axios.post('/api/batch/hls/create', {
             fileTitle: title
         }))
-        .then(() => axios.post('/batch/subtitle/create', {
+        .then(() => axios.post('/api/batch/subtitle/create', {
             fileTitle: title
         }))
         .then(() => console.log('업로드 정상적으로 실행 중...'))

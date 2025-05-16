@@ -6,6 +6,14 @@ import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchRequestDto;
 import com.ssginc.showpingrefactoring.domain.watch.entity.Watch;
 import com.ssginc.showpingrefactoring.domain.watch.dto.response.WatchResponseDto;
 import com.ssginc.showpingrefactoring.domain.watch.service.WatchService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +30,7 @@ import java.util.Map;
  * 영상 시청과 관련한 요청-응답을 수행하는 컨트롤러 클래스
  * <p>
  */
+@Tag(name = "watch", description = "시청 관련 API")
 @Controller
 @RequestMapping("/api/watch")
 @RequiredArgsConstructor
@@ -37,6 +46,24 @@ public class WatchApiController {
      * @return 로그인한 사용자의 시청내역 응답 객체
      */
     @GetMapping("/history/list")
+    @Operation(
+            summary = "시청 내역 조회",
+            description = "로그인한 회원의 시청내역 조회"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = WatchResponseDto.class)
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
+    @Parameter(hidden = true)
     public ResponseEntity<?> getWatchHistory(@AuthenticationPrincipal UserDetails userDetails) {
         // 로그인한 사용자의 정보를 가져오기
         Member member = memberService.findMemberById(userDetails.getUsername());
@@ -54,7 +81,37 @@ public class WatchApiController {
      * @return 응답 결과
      */
     @PostMapping("/insert")
-    public ResponseEntity<?> insertWatchHistory(@AuthenticationPrincipal UserDetails userDetails, @RequestBody WatchRequestDto watchRequestDto) {
+    @Operation(
+            summary = "시청 내역 조회",
+            description = "로그인한 회원의 시청내역 조회"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = WatchResponseDto.class)
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "추가할 시청 정보를 담은 JSON",
+            required    = true,
+            content     = @Content(
+                    mediaType = "application/json",
+                    schema    = @Schema(
+                            type        = "object",
+                            description = "추가할 시청 정보 예시",
+                            example     = "{\"streamNo\":\"1\", \"watchTime\":\"2025-01-01T12:00:00\"}"
+                    )
+            )
+    )
+    public ResponseEntity<?> insertWatchHistory(@AuthenticationPrincipal UserDetails userDetails,
+                                                @RequestBody WatchRequestDto watchRequestDto) {
         Long memberNo = null;
         if (userDetails != null) {
             Member member = memberService.findMemberById(userDetails.getUsername());
