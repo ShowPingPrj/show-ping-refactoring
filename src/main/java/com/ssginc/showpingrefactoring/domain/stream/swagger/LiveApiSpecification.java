@@ -1,5 +1,6 @@
 package com.ssginc.showpingrefactoring.domain.stream.swagger;
 
+import com.ssginc.showpingrefactoring.common.dto.CustomErrorResponse;
 import com.ssginc.showpingrefactoring.domain.product.dto.object.ProductItemDto;
 import com.ssginc.showpingrefactoring.domain.stream.dto.request.LiveRequestDto;
 import com.ssginc.showpingrefactoring.domain.stream.dto.request.RegisterLiveRequestDto;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +26,20 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Live", description = "생방송 관련 API")
+@ApiResponse(responseCode = "500", description = "서버 내부 오류",
+        content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = CustomErrorResponse.class),
+                examples = {
+                        @ExampleObject(
+                                value = "{\n" +
+                                        "  \"code\": \"INTERNAL_SERVER_ERROR\",\n" +
+                                        "  \"message\": \"알 수 없는 서버 오류가 발생했습니다.\"\n" +
+                                        "}"
+                        )
+                }
+        )
+)
 public interface LiveApiSpecification {
 
     @GetMapping("/onair")
@@ -33,16 +49,15 @@ public interface LiveApiSpecification {
     )
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200",
-                    description = "라이브 중인 방송 정보 가져오기 성공",
+                    responseCode = "200", description = "라이브 중인 방송 정보 가져오기 성공",
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = StreamResponseDto.class)
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+            )
     })
     ResponseEntity<?> getOnair();
+
 
     @GetMapping("/active")
     @Operation(
@@ -54,11 +69,10 @@ public interface LiveApiSpecification {
                     responseCode = "200",
                     description = "페이징된 라이브 중 + 라이브 예정 방송 목록",
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = PageStreamResponseDto.class)
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+            )
     })
     ResponseEntity<?> getActive(
             @Parameter(
@@ -77,11 +91,10 @@ public interface LiveApiSpecification {
                     responseCode = "200",
                     description = "페이징된 라이브 예정 방송 목록",
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = PageStreamResponseDto.class)
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+            )
     })
     ResponseEntity<?> getStandby(
             @Parameter(
@@ -100,13 +113,12 @@ public interface LiveApiSpecification {
                     responseCode = "200",
                     description = "상품 목록 가져오기 성공",
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             array = @ArraySchema(
                                     schema = @Schema(implementation = ProductItemDto.class)
                             )
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+            )
     })
     ResponseEntity<List<ProductItemDto>> getProductList();
 
@@ -120,14 +132,13 @@ public interface LiveApiSpecification {
                     responseCode = "200",
                     description = "라이브 등록 성공 { \"streamNo\": 123 } 형태로 ID 반환",
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(type = "object"),
                             examples = @ExampleObject(
                                     value = "{\"streamNo\": 123}"
                             )
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+            )
     })
     ResponseEntity<Map<String, Long>> resgisterLive(
             @Parameter(hidden = true)
@@ -137,7 +148,7 @@ public interface LiveApiSpecification {
                     description = "등록할 라이브 정보",
                     required = true,
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RegisterLiveRequestDto.class)
                     )
             )
@@ -153,18 +164,17 @@ public interface LiveApiSpecification {
                     responseCode = "200",
                     description = "방송 시작 성공",
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = StartLiveResponseDto.class)
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+            )
     })
     ResponseEntity<StartLiveResponseDto> startLive(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "시작할 방송의 방송 번호",
                     required = true,
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = LiveRequestDto.class)
                     )
             )
@@ -180,21 +190,20 @@ public interface LiveApiSpecification {
                     responseCode = "200",
                     description = "방송 중단 성공",
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(type = "object"),
                             examples = @ExampleObject(
                                     value = "{\"result\": true}"
                             )
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+            )
     })
     ResponseEntity<Map<String, Boolean>> stopLive(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "중단할 방송의 방송 번호",
                     required = true,
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = LiveRequestDto.class)
                     )
             )
@@ -210,11 +219,10 @@ public interface LiveApiSpecification {
                     responseCode = "200",
                     description = "등록해놓은 방송 정보 가져오기 성공",
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = GetLiveRegisterInfoResponseDto.class)
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+            )
     })
     ResponseEntity<GetLiveRegisterInfoResponseDto> getLiveInfo(
             @Parameter(hidden = true)
