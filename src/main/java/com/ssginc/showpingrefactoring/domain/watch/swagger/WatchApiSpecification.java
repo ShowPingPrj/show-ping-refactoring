@@ -16,25 +16,23 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "watch", description = "시청 관련 API")
+@ApiResponse(responseCode = "500", description = "서버 내부 오류")
 public interface WatchApiSpecification {
 
     @Operation(
             summary = "시청 내역 조회",
             description = "로그인한 회원의 시청내역 조회"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = WatchResponseDto.class)
-                            )
+    @ApiResponse(
+            responseCode = "200",
+            description = "조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(
+                            schema = @Schema(implementation = WatchResponseDto.class)
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+            )
+    )
     @Parameter(hidden = true)
     ResponseEntity<?> getWatchHistory(@AuthenticationPrincipal UserDetails userDetails);
 
@@ -42,19 +40,16 @@ public interface WatchApiSpecification {
             summary = "시청 내역 조회",
             description = "로그인한 회원의 시청내역 조회"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = WatchResponseDto.class)
-                            )
+    @ApiResponse(
+            responseCode = "200",
+            description = "조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(
+                            schema = @Schema(implementation = WatchResponseDto.class)
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+            )
+    )
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "추가할 시청 정보를 담은 JSON",
             required    = true,

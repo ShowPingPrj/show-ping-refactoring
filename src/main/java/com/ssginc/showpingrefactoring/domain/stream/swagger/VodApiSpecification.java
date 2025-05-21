@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -21,25 +20,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Map;
 
 @Tag(name = "vod", description = "VOD 관련 API")
+@ApiResponse(responseCode = "500", description = "서버 내부 오류")
 public interface VodApiSpecification {
 
     @Operation(
             summary = "VOD 목록 조회",
             description = "등록된 모든 VOD 정보를 조회"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = StreamResponseDto.class)
-                            )
+    @ApiResponse(
+            responseCode = "200",
+            description = "조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(
+                            schema = @Schema(implementation = StreamResponseDto.class)
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+            )
+    )
     ResponseEntity<?> getVodList();
 
 
@@ -47,17 +44,14 @@ public interface VodApiSpecification {
             summary = "VOD 목록 조회 페이지네이션",
             description = "등록된 VOD 정보를 페이지네이션하여 조회"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = Page.class)
-                    )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Page.class)
+            )
+    )
     @Parameter(
             name        = "pageNo",
             in          = ParameterIn.QUERY,
@@ -71,17 +65,14 @@ public interface VodApiSpecification {
             summary = "VOD 목록 페이지네이션 (시청수 기준 내림차순)",
             description = "등록된 VOD 정보를 시청수 기준으로 내림차순 정렬하여 페이지네이션 조회"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = Page.class)
-                    )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Page.class)
+            )
+    )
     @Parameter(
             name        = "pageNo",
             in          = ParameterIn.QUERY,
@@ -95,19 +86,16 @@ public interface VodApiSpecification {
             summary = "카테고리 별 VOD 정보 조회",
             description = "등록된 VOD 정보를 카테고리별로 조회"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            array = @ArraySchema(
-                                    schema = @Schema(implementation = StreamResponseDto.class)
-                            )
+    @ApiResponse(
+            responseCode = "200",
+            description = "조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(
+                            schema = @Schema(implementation = StreamResponseDto.class)
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+            )
+    )
     @Parameter(name = "categoryNo", description = "카테고리 번호", example = "0")
     ResponseEntity<?> getVodListByCategory(@PathVariable Long categoryNo);
 
@@ -115,17 +103,14 @@ public interface VodApiSpecification {
             summary = "카테고리별 VOD 목록 페이지네이션",
             description = "등록된 VOD 정보를 카테고리별 페이지네이션하여 조회"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = Page.class)
-                    )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Page.class)
+            )
+    )
     @Parameters({
             @Parameter(
                     name        = "categoryNo",
@@ -149,17 +134,14 @@ public interface VodApiSpecification {
             summary = "카테고리별 VOD 목록 시청 수 순으로 페이지네이션",
             description = "카테고리별 VOD 목록을 시청 수 순으로 페이지네이션하여 조회"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = Page.class)
-                    )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Page.class)
+            )
+    )
     @Parameters({
             @Parameter(
                     name        = "pageNo",
@@ -184,21 +166,18 @@ public interface VodApiSpecification {
             summary     = "VOD 업로드",
             description = "제목(title)을 전달받아 VOD를 업로드합니다."
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "업로드 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    type        = "String",
-                                    description = "업로드 처리 결과",
-                                    example     = "title"
-                            )
+    @ApiResponse(
+            responseCode = "200",
+            description = "업로드 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(
+                            type        = "String",
+                            description = "업로드 처리 결과",
+                            example     = "title"
                     )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+            )
+    )
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "업로드할 VOD 제목을 담은 JSON",
             required    = true,
@@ -218,17 +197,14 @@ public interface VodApiSpecification {
             summary     = "자막 조회",
             description = "요청한 파일 제목에 해당하는 자막 정보를 JSON 형태로 반환"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(type = "object", description = "자막 정보 JSON")
-                    )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(type = "object", description = "자막 정보 JSON")
+            )
+    )
     @Parameter(
             name        = "title",
             in          = ParameterIn.PATH,

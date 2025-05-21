@@ -6,42 +6,36 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import reactor.core.publisher.Mono;
 
 @Tag(name = "hls", description = "HLS 기반 VOD 재생")
+@ApiResponse(responseCode = "500", description = "서버 내부 오류")
 public interface HlsSpecification {
 
     @Operation(summary = "get M3U8 ver 1", description = "HLS metadata 요청 (생성 및 fetch)")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "성공",
-                    content = @Content(
-                            mediaType = "application/vnd.apple.mpegurl",
-                            schema = @Schema(type = "string", format = "binary")
-                    )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "성공",
+            content = @Content(
+                    mediaType = "application/vnd.apple.mpegurl",
+                    schema = @Schema(type = "string", format = "binary")
+            )
+    )
     @Parameter(name = "title", description = "영상 제목", example = "노트북 특가!")
     Mono<?> getHLSV1(@PathVariable String title);
 
     @Operation(summary = "get TS ver 1", description = "10초 단위의 영상 segment 요청")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "성공",
-                    content = @Content(
-                            mediaType = "video/mp2t",
-                            schema = @Schema(type = "string", format = "binary")
-                    )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "성공",
+            content = @Content(
+                    mediaType = "video/mp2t",
+                    schema = @Schema(type = "string", format = "binary")
+            )
+    )
     @Parameters({
             @Parameter(name = "title", description = "영상 제목", example = "노트북 특가!"),
             @Parameter(name = "segment", description = "영상 segment 번호", example = "1")
@@ -50,32 +44,26 @@ public interface HlsSpecification {
                            @PathVariable String segment);
 
     @Operation(summary = "get M3U8 ver2 + WebFlux", description = "HLS metadata 요청 (fetch만 수행 + WebFlux)")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "성공",
-                    content = @Content(
-                            mediaType = "application/vnd.apple.mpegurl",
-                            schema = @Schema(type = "string", format = "binary")
-                    )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "성공",
+            content = @Content(
+                    mediaType = "application/vnd.apple.mpegurl",
+                    schema = @Schema(type = "string", format = "binary")
+            )
+    )
     @Parameter(name = "title", description = "영상 제목", example = "노트북 특가!")
     Mono<?> getHLSV2Flux(@PathVariable String title);
 
     @Operation(summary = "get TS ver2 + WebFlux", description = "10초 단위의 영상 segment 요청 (WebFlux)")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "성공",
-                    content = @Content(
-                            mediaType = "video/mp2t",
-                            schema = @Schema(type = "string", format = "binary")
-                    )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "성공",
+            content = @Content(
+                    mediaType = "video/mp2t",
+                    schema = @Schema(type = "string", format = "binary")
+            )
+    )
     @Parameters ({
             @Parameter(name = "title", description = "영상 제목", example = "노트북 특가!"),
             @Parameter(name = "segment", description = "영상 segment 번호", example = "1")
@@ -84,32 +72,26 @@ public interface HlsSpecification {
                                @PathVariable String segment);
 
     @Operation(summary = "get M3U8 ver2", description = "HLS metadata 요청 (fetch만 수행)")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "성공",
-                    content = @Content(
-                            mediaType = "application/vnd.apple.mpegurl",
-                            schema = @Schema(type = "string", format = "binary")
-                    )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "성공",
+            content = @Content(
+                    mediaType = "application/vnd.apple.mpegurl",
+                    schema = @Schema(type = "string", format = "binary")
+            )
+    )
     @Parameter(name = "title", description = "영상 제목", example = "노트북 특가!")
     ResponseEntity<?> getHLSV2(@PathVariable String title);
 
     @Operation(summary = "get TS ver2", description = "10초 단위의 영상 segment 요청")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "성공",
-                    content = @Content(
-                            mediaType = "video/mp2t",
-                            schema = @Schema(type = "string", format = "binary")
-                    )
-            ),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(
+            responseCode = "200",
+            description = "성공",
+            content = @Content(
+                    mediaType = "video/mp2t",
+                    schema = @Schema(type = "string", format = "binary")
+            )
+    )
     @Parameters ({
             @Parameter(name = "title", description = "영상 제목", example = "노트북 특가!"),
             @Parameter(name = "segment", description = "영상 segment 번호", example = "1")
