@@ -36,12 +36,12 @@ public interface WatchApiSpecification {
     ResponseEntity<?> getWatchHistory(@AuthenticationPrincipal UserDetails userDetails);
 
     @Operation(
-            summary = "시청 내역 조회",
-            description = "로그인한 회원의 시청내역 조회"
+            summary = "시청 내역 추가",
+            description = "라이브 및 VOD 시청이력 추가"
     )
     @ApiResponse(
             responseCode = "200",
-            description = "조회 성공",
+            description = "시청내역 추가 성공",
             content = @Content(
                     mediaType = "application/json",
                     array = @ArraySchema(
