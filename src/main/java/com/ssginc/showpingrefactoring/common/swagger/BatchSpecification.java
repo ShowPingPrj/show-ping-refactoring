@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "batch", description = "Batch 작업 수행")
-@ApiResponse(responseCode = "500", description = "서버 내부 오류")
+@ApiResponse(responseCode = "500", description = ApiResponseDescriptions.SERVER_ERROR)
 public interface BatchSpecification {
 
     @Operation(

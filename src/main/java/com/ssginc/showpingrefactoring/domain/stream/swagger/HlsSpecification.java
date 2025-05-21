@@ -1,5 +1,6 @@
 package com.ssginc.showpingrefactoring.domain.stream.swagger;
 
+import com.ssginc.showpingrefactoring.common.swagger.ApiResponseDescriptions;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import reactor.core.publisher.Mono;
 
 @Tag(name = "hls", description = "HLS 기반 VOD 재생")
-@ApiResponse(responseCode = "500", description = "서버 내부 오류")
+@ApiResponse(responseCode = "500", description = ApiResponseDescriptions.SERVER_ERROR)
 public interface HlsSpecification {
 
     @Operation(summary = "get M3U8 ver 1", description = "HLS metadata 요청 (생성 및 fetch)")

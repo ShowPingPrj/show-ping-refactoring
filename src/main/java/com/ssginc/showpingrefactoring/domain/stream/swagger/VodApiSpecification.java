@@ -1,5 +1,6 @@
 package com.ssginc.showpingrefactoring.domain.stream.swagger;
 
+import com.ssginc.showpingrefactoring.common.swagger.ApiResponseDescriptions;
 import com.ssginc.showpingrefactoring.domain.stream.dto.response.StreamResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Map;
 
 @Tag(name = "vod", description = "VOD 관련 API")
-@ApiResponse(responseCode = "500", description = "서버 내부 오류")
+@ApiResponse(responseCode = "500", description = ApiResponseDescriptions.SERVER_ERROR)
 public interface VodApiSpecification {
 
     @Operation(

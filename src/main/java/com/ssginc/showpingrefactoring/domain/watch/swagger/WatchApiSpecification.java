@@ -1,5 +1,6 @@
 package com.ssginc.showpingrefactoring.domain.watch.swagger;
 
+import com.ssginc.showpingrefactoring.common.swagger.ApiResponseDescriptions;
 import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchRequestDto;
 import com.ssginc.showpingrefactoring.domain.watch.dto.response.WatchResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "watch", description = "시청 관련 API")
-@ApiResponse(responseCode = "500", description = "서버 내부 오류")
+@ApiResponse(responseCode = "500", description = ApiResponseDescriptions.SERVER_ERROR)
 public interface WatchApiSpecification {
 
     @Operation(
