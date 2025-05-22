@@ -8,6 +8,13 @@ import com.ssginc.showpingrefactoring.domain.stream.dto.response.GetLiveRegister
 import com.ssginc.showpingrefactoring.domain.stream.dto.response.StartLiveResponseDto;
 import com.ssginc.showpingrefactoring.domain.stream.dto.response.StreamResponseDto;
 import com.ssginc.showpingrefactoring.domain.stream.service.LiveService;
+import com.ssginc.showpingrefactoring.domain.stream.swagger.LiveApiSpecification;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +32,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/live")
 @RequiredArgsConstructor
-public class LiveApiController {
+public class LiveApiController implements LiveApiSpecification {
 
     private final LiveService liveService;
 
@@ -36,6 +43,7 @@ public class LiveApiController {
      * @return 전달할 응답객체 (json 형태로 전달)
      */
     @GetMapping("/onair")
+    @Override
     public ResponseEntity<?> getOnair() {
         StreamResponseDto onair = liveService.getOnair();
 
@@ -50,6 +58,7 @@ public class LiveApiController {
      * @return 전달할 응답객체 (json 형태로 전달)
      */
     @GetMapping("/active")
+    @Override
     public ResponseEntity<?> getActive(@RequestParam(defaultValue = "0", name = "pageNo") int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, 4);
         Page<StreamResponseDto> pageInfo = liveService.getAllActiveByPage(pageable);
@@ -65,6 +74,7 @@ public class LiveApiController {
      * @return 전달할 응답객체 (json 형태로 전달)
      */
     @GetMapping("/standby")
+    @Override
     public ResponseEntity<?> getStandby(@RequestParam(defaultValue = "0", name = "pageNo") int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, 4);;
         Page<StreamResponseDto> pageInfo = liveService.getAllStandbyByPage(pageable);
@@ -80,6 +90,7 @@ public class LiveApiController {
      * @return 상품 목록이 포함된 응답 객체
      */
     @GetMapping("/product/list")
+    @Override
     public ResponseEntity<List<ProductItemDto>> getProductList() {
         List<ProductItemDto> productItemDtoList = productService.getProducts();
 
@@ -92,6 +103,7 @@ public class LiveApiController {
      * @return 생성 혹은 수정된 방송 데이터의 방송 번호가 포함된 응답 객체
      */
     @PostMapping("/register")
+    @Override
     public ResponseEntity<Map<String, Long>> resgisterLive(@AuthenticationPrincipal UserDetails userDetails, @RequestBody RegisterLiveRequestDto request) {
         String memberId = null;
 
@@ -113,6 +125,7 @@ public class LiveApiController {
      * @return 시작한 방송에 대한 정보
      */
     @PostMapping("/start")
+    @Override
     public ResponseEntity<StartLiveResponseDto> startLive(@RequestBody LiveRequestDto request) {
         StartLiveResponseDto response = liveService.startLive(request.getStreamNo());
 
@@ -125,6 +138,7 @@ public class LiveApiController {
      * @return 방송 종료 설정 적용 여부
      */
     @PostMapping("/stop")
+    @Override
     public ResponseEntity<Map<String, Boolean>> stopLive(@RequestBody LiveRequestDto request) {
         Boolean result = liveService.stopLive(request.getStreamNo());
 
@@ -140,6 +154,7 @@ public class LiveApiController {
      * @return 방송 정보가 담긴 응답 객체
      */
     @GetMapping("/live-info")
+    @Override
     public ResponseEntity<GetLiveRegisterInfoResponseDto> getLiveInfo(@AuthenticationPrincipal UserDetails userDetails) {
         String memberId = null;
         if (userDetails != null) {
