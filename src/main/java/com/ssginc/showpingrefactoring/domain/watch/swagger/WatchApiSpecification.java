@@ -1,6 +1,5 @@
 package com.ssginc.showpingrefactoring.domain.watch.swagger;
 
-import com.ssginc.showpingrefactoring.common.swagger.ApiResponseDescriptions;
 import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchRequestDto;
 import com.ssginc.showpingrefactoring.domain.watch.dto.response.WatchResponseDto;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,6 +1,5 @@
 package com.ssginc.showpingrefactoring.domain.stream.swagger;
 
-import com.ssginc.showpingrefactoring.common.swagger.ApiResponseDescriptions;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
