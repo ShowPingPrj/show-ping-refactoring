@@ -193,7 +193,7 @@ document.querySelector('.signup-btn').addEventListener('click', function (event)
 });
 
 // 이메일 인증 코드 전송 버튼 이벤트
-document.querySelector('.verify-btn').addEventListener('click', function () {
+function sendVerificationCode() {
     const email = document.getElementById('email').value.trim();
 
     if (!email) {
@@ -220,7 +220,7 @@ document.querySelector('.verify-btn').addEventListener('click', function () {
             console.error("오류 발생:", error);
             Swal.fire('전송 실패', '이메일 전송에 실패했습니다.', 'error');
         });
-});
+}
 
 // 유효성 검사 함수들
 function validateMemberId(memberId) {
