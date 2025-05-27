@@ -16,8 +16,8 @@ public class VodListRequestDto {
     private int pageNo;
 
     @Min(value = 0)
-    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private Long categoryNo;
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long categoryNo = 0L;
 
     @Schema(allowableValues = {"mostView", "recent"}, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String sort = "recent";
