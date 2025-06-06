@@ -128,23 +128,24 @@ document.querySelector('.signup-btn').addEventListener('click', function (event)
         return;
     }
 
+    // 중복 확인 순서: 아이디 -> 전화번호 -> 이메일 -> 인증 -> 가입
     fetch(`/api/member/check-duplicate?id=${memberId}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('중복된 아이디입니다.');
             }
-            return response.text();
+            return fetch(`/api/member/check-phone-duplicate?phone=${phone}`);
         })
-        .then(() => {
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('중복된 전화번호입니다.');
+            }
             return fetch(`/api/member/check-email-duplicate?email=${email}`);
         })
         .then(response => {
             if (!response.ok) {
                 throw new Error('중복된 이메일입니다.');
             }
-            return response.text();
-        })
-        .then(() => {
             return axios.post('/api/member/verify-code', { email: email, emailCode: emailCode });
         })
         .then(response => {
@@ -169,7 +170,6 @@ document.querySelector('.signup-btn').addEventListener('click', function (event)
             });
         })
         .then(response => {
-            console.log(response)
             if (response) {
                 Swal.fire({
                     icon: 'success',
@@ -190,6 +190,7 @@ document.querySelector('.signup-btn').addEventListener('click', function (event)
                 window.location.reload();
             });
         });
+
 });
 
 // 이메일 인증 코드 전송 버튼 이벤트

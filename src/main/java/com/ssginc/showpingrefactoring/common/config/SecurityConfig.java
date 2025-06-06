@@ -57,7 +57,7 @@ public class SecurityConfig {
                                         "/api/products/**", "/api/admin/verify-totp", "/login/signup/**", "/api/member/verify-code",
                                         "/api/admin/totp-setup/**", "/api/auth/refresh-token-check/**", "/stream/broadcast", "/stream/vod/list/page/**",
                                         "/favicon.ico/**", "/api/auth/**",  "/api/member/check-duplicate", "/api/member/register",
-                                        "/api/member/send-code/**", "/api/member/check-email-duplicate","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/api/batch/**", "/api/live/standby"
+                                        "/api/member/send-code/**", "/api/member/check-email-duplicate", "/api/member/check-phone-duplicate", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/api/batch/**", "/api/live/standby"
                                         ,"/api/live/product/list", "/api/live/onair", "/api/live/live-info", "/api/live/active"
                                 ).permitAll()
                                 // ADMIN 전용 URL (두 코드 블록의 ADMIN 관련 URL 병합)
