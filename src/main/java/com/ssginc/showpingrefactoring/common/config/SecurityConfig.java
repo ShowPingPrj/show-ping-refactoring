@@ -63,7 +63,7 @@ public class SecurityConfig {
                                 ).permitAll()
                                 // ADMIN 전용 URL (두 코드 블록의 ADMIN 관련 URL 병합)
                                 .requestMatchers("/admin/**","/api/live/stop", "/api/live/start", "/api/live/register", "/api/report/updateStatus", "/api/report/register",
-                                        "/api/report/list", "/api/chatRoom/create", "/api/vod/upload", "/api/void/subtitle/**", "/stream/stream", "/report/report")
+                                        "/api/report/list", "/api/chatRoom/create", "/api/vod/upload", "/api/void/subtitle/**", "/stream/stream", "/report/report", "/member")
                                 .hasRole("ADMIN")
                                 // USER 전용 URL (두 코드 블록의 USER 관련 URL 병합)
                                 .requestMatchers(
