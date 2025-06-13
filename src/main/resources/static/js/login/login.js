@@ -1,26 +1,32 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // ShowPing 로고 클릭 시 메인 페이지로 이동
-    const showPingText = document.querySelector("h1");
-    if (showPingText) {
-        showPingText.style.cursor = "pointer";
-        showPingText.addEventListener("click", function () {
-            window.location.href = "/";
-        });
-    }
+document.addEventListener("DOMContentLoaded", async () => {
+    const authButton = document.getElementById("auth-button");
+    const authIcon = document.getElementById("auth-icon");
 
-    // 2FA 입력폼에서 Enter 키를 눌렀을 때 인증 버튼 클릭
-    const totpInput = document.getElementById("totpCode");
-    if (totpInput) {
-        totpInput.addEventListener("keypress", function (event) {
-            if (event.key === "Enter") {
-                event.preventDefault(); // 기본 엔터 키 동작 방지
-                verifyTOTP(event); // 인증 함수 호출
+    try {
+        const res = await fetch("/api/auth/user-info", {
+            credentials: "include"
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            authButton.href = "#";
+            authIcon.src = "/img/icon/logout.png";
+            authButton.addEventListener("click", e => {
+                e.preventDefault();
+                logout();
+            });
+
+            // 관리자 메뉴 표시
+            if (data.role === "ADMIN") {
+                document.getElementById("admin-menu").hidden = false;
             }
-        });
+        } else {
+            throw new Error();
+        }
+    } catch {
+        authButton.href = "/login";
+        authIcon.src = "/img/icon/login.png";
     }
-
-    window.history.pushState(null, "", window.location.href);
-    window.addEventListener("popstate", preventBackNavigation);
 });
 
 // 로그인 함수 (현재는 일단 관리자 사용자 할것없이 바로 로그인)
@@ -32,29 +38,23 @@ async function login(event) {
 
     try {
         const response = await axios.post("/api/auth/login", {
-            memberId: memberId,
-            password: password
+            memberId,
+            password
         }, {
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true
         });
 
-        console.log("로그인 응답:", response.data);
-
-        if (response.data.accessToken) {
-            sessionStorage.setItem("accessToken", response.data.accessToken);
-
-            setTimeout(() => {
-                window.location.href = "/";
-            }, 500);
-        } else {
+        if (response.data.memberRole) {
             Swal.fire({
-                icon: "error",
-                title: "로그인 실패",
-                text: "아이디 또는 비밀번호를 확인하세요."
+                icon: "success",
+                title: "로그인 성공",
+                text: `${response.data.memberRole} 권한으로 로그인됨`
+            }).then(() => {
+                location.href = "/";
             });
         }
     } catch (error) {
-        console.error("로그인 요청 실패:", error.response ? error.response.data : error);
         Swal.fire({
             icon: "error",
             title: "로그인 실패",
