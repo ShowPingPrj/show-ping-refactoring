@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const authButton = document.getElementById("auth-button");
     const authIcon = document.getElementById("auth-icon");
+    const adminMenu = document.getElementById("admin-menu");
 
     try {
         const res = await fetch("/api/auth/user-info", {
@@ -9,25 +10,33 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (res.ok) {
             const data = await res.json();
-            authButton.href = "#";
-            authIcon.src = "/img/icon/logout.png";
-            authButton.addEventListener("click", e => {
-                e.preventDefault();
-                logout();
-            });
 
-            // 관리자 메뉴 표시
-            if (data.role === "ADMIN") {
-                document.getElementById("admin-menu").hidden = false;
+            // ✅ 요소가 존재할 때만 속성 설정
+            if (authButton && authIcon) {
+                authButton.href = "#";
+                authIcon.src = "/img/icon/logout.png";
+                authButton.addEventListener("click", e => {
+                    e.preventDefault();
+                    logout();
+                });
             }
+
+            if (data.role === "ADMIN" && adminMenu) {
+                adminMenu.hidden = false;
+            }
+
         } else {
             throw new Error();
         }
     } catch {
-        authButton.href = "/login";
-        authIcon.src = "/img/icon/login.png";
+        // ✅ 요소가 존재할 때만 속성 설정
+        if (authButton && authIcon) {
+            authButton.href = "/login";
+            authIcon.src = "/img/icon/login.png";
+        }
     }
 });
+
 
 // 로그인 함수 (현재는 일단 관리자 사용자 할것없이 바로 로그인)
 async function login(event) {
