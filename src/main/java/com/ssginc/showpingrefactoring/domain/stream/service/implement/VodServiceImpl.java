@@ -36,7 +36,7 @@ public class VodServiceImpl implements VodService {
     @Override
     public Page<StreamResponseDto> findVods(Long categoryNo, String sort, Pageable pageable) {
         Page<StreamResponseDto> vodPage;
-        boolean isMostView = "mostView".equals(sort);
+        boolean isMostView = "mostViewed".equals(sort);
 
         // 조회수 기반 정렬이 포함된 경우
         if (isMostView) {
