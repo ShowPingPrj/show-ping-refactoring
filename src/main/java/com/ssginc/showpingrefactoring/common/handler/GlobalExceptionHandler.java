@@ -2,6 +2,7 @@ package com.ssginc.showpingrefactoring.common.handler;
 
 import com.ssginc.showpingrefactoring.common.dto.CustomErrorResponse;
 import com.ssginc.showpingrefactoring.common.exception.CustomException;
+import com.ssginc.showpingrefactoring.common.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,13 +36,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<CustomErrorResponse> handleBindException(BindException ex) {
-        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.joining(", "));
+    public ResponseEntity<CustomErrorResponse> handleBindException() {
+        ErrorCode e = ErrorCode.INVALID_METHOD_ARGUMENT;
 
         return ResponseEntity
-                .badRequest()
-                .body(CustomErrorResponse.of("VALIDATION_ERROR", errorMessage));
+                .status(HttpStatus.BAD_REQUEST)
+                .body(CustomErrorResponse.of(e.getCode(), e.getMessage()));
     }
 }
