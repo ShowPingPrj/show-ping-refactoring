@@ -1,7 +1,9 @@
 package com.ssginc.showpingrefactoring.common.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public class CustomErrorResponse {
 
