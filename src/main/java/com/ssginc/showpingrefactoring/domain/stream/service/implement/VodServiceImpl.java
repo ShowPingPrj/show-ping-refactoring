@@ -58,7 +58,7 @@ public class VodServiceImpl implements VodService {
         }
 
         if (!vodPage.hasContent()) {
-            throw new CustomException(ErrorCode.VOD_NOT_FOUND);
+            throw new CustomException(ErrorCode.VOD_LIST_EMPTY);
         }
 
         return vodPage;
