@@ -24,7 +24,8 @@ public enum ErrorCode {
 
 
     // [VOD 관련 에러 코드]
-    VOD_NOT_FOUND(HttpStatus.NOT_FOUND, "VO001", "요청한 VOD 정보가 없습니다."),
+    VOD_LIST_EMPTY(HttpStatus.NOT_FOUND, "VO001", "VOD 목록이 비어있습니다."),
+    VOD_NOT_FOUND(HttpStatus.NOT_FOUND, "VO002", "요청한 VOD 정보가 없습니다.")
 
     //(추후 추가 가능: 이미 존재하는 이메일/아이디 등)
     ;
