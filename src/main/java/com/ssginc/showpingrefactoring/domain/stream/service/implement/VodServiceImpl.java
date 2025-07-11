@@ -74,7 +74,7 @@ public class VodServiceImpl implements VodService {
         StreamResponseDto vodDto = vodRepository.findVodByNo(streamNo);
 
         if (vodDto == null) {
-            throw new CustomException(ErrorCode.VOD_NOT_FOUND);
+        throw new CustomException(ErrorCode.STREAM_NOT_FOUND);
         }
 
         return vodDto;

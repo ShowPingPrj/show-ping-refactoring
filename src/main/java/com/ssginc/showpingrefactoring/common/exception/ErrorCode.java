@@ -23,9 +23,13 @@ public enum ErrorCode {
     EMAIL_NOT_VERIFIED(HttpStatus.BAD_REQUEST, "M009", "이메일 인증이 완료되지 않았습니다."),
 
 
-    // [VOD 관련 에러 코드]
-    VOD_LIST_EMPTY(HttpStatus.NOT_FOUND, "VO001", "VOD 목록이 비어있습니다."),
-    VOD_NOT_FOUND(HttpStatus.NOT_FOUND, "VO002", "요청한 VOD 정보가 없습니다.")
+    // [라이브.VOD 관련 에러 코드]
+    // [공통]
+    STREAM_NOT_FOUND(HttpStatus.NOT_FOUND, "ST001", "요청한 영상 정보가 없습니다."),
+
+    // [VOD]
+    VOD_LIST_EMPTY(HttpStatus.NOT_FOUND, "VO001", "VOD 목록이 비어있습니다.")
+
 
     //(추후 추가 가능: 이미 존재하는 이메일/아이디 등)
     ;
