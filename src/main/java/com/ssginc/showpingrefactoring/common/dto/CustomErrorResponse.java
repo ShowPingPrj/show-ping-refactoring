@@ -1,7 +1,10 @@
 package com.ssginc.showpingrefactoring.common.dto;
 
+import com.ssginc.showpingrefactoring.common.exception.ErrorCode;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public class CustomErrorResponse {
 
@@ -11,6 +14,15 @@ public class CustomErrorResponse {
 
     public static CustomErrorResponse of(String code, String message) {
         return new CustomErrorResponse(code, message);
+    }
+
+    public static CustomErrorResponse of(ErrorCode errorCode) {
+        return new CustomErrorResponse(errorCode.getCode(), errorCode.getMessage());
+    }
+
+    public CustomErrorResponse(ErrorCode errorCode) {
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
     }
 
 }

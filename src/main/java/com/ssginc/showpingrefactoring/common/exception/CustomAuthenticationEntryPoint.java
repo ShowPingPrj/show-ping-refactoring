@@ -1,6 +1,8 @@
 package com.ssginc.showpingrefactoring.common.exception;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssginc.showpingrefactoring.common.dto.CustomErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,10 +26,13 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                 request.getRequestURI().startsWith("/api");
 
         if (isApiRequest) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(ErrorCode.AUTH_UNAUTHORIZED.getStatus().value());
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("{\"message\": \"Unauthorized access. Please login.\"}");
+
+            CustomErrorResponse errorResponse = new CustomErrorResponse(ErrorCode.AUTH_UNAUTHORIZED);
+            String json = new ObjectMapper().writeValueAsString(errorResponse);
+            response.getWriter().write(json);
         } else {
             response.sendRedirect("/login");
         }
