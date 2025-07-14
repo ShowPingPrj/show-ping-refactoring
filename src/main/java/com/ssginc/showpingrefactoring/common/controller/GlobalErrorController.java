@@ -16,10 +16,10 @@ public class GlobalErrorController implements ErrorController {
             int statusCode = Integer.parseInt(status.toString());
             return switch (statusCode) {
                 case 404 -> "error/404";
-                default -> "error/error";
+                default -> "error/500";
             };
         }
-        return "error/error";
+        return "error/500";
     }
 }
 
