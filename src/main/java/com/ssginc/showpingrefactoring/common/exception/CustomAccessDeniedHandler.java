@@ -14,10 +14,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("text/html;charset=utf-8");
-        response.getWriter().write("Unauthorized User.");
+        response.sendRedirect("/error-page/403");
     }
 
 }

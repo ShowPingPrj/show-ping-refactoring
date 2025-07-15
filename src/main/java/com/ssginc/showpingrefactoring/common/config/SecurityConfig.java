@@ -53,7 +53,7 @@ public class SecurityConfig {
 //                                .requestMatchers("/**", "/css/**", "/js/**", "/img/**").permitAll()
                                 // 공개 접근 가능한 URL (두 코드 블록의 permitAll 목록 통합)
                                 .requestMatchers(
-                                        "/", "/login", "/webrtc/watch", "/webrtc/watch/**", "/css/**", "/js/**", "/images/**",
+                                        "/", "/login","/login/**","/error","/error/**","/error-page/**", "/webrtc/watch", "/webrtc/watch/**", "/css/**", "/js/**", "/images/**",
                                         "/img/**", "/assets/**", "/oauth/**", "/api/register", "/api/auth/login", "/api/auth/logout",
                                         "/api/auth/user-info", "/api/admin/login", "/product/detail/**", "/api/categories/**", "/category/**",
                                         "/api/products/**", "/api/admin/verify-totp", "/login/signup/**", "/api/member/verify-code",
@@ -70,7 +70,7 @@ public class SecurityConfig {
                                 // USER 전용 URL (두 코드 블록의 USER 관련 URL 병합)
                                 .requestMatchers(
                                         "/user/**","/api/carts/**", "/api/payments/**", "/api/orders/**", "/api/watch/history/**", "/api/hls/**", "/api/payments/verify",
-                                        "/api/payments/complete", "/api/vod/list/**", "/api/chat/**", "/watch/history/**", "/cart/**", "/product/product_cart", "/payment/**",
+                                        "/api/payments/complete", "/api/vod/list/**", "/api/chat/**","/watch/history", "/watch/history/**","/api/watch/history/list","/api/watch/history/list/**", "/cart/**", "/product/product_cart", "/payment/**",
                                         "/product/product_payment", "/success/**", "/payment/success/**"
                                 ).hasAnyRole("USER", "ADMIN")
                                 .anyRequest().authenticated()
