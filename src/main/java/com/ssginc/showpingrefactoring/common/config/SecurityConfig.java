@@ -61,7 +61,7 @@ public class SecurityConfig {
                                         "/favicon.ico", "/api/auth/**",  "/api/member/check-duplicate", "/api/member/register",
                                         "/api/member/send-code/**", "/api/member/check-email-duplicate", "/api/member/check-phone-duplicate", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/api/batch/**", "/api/live/standby"
                                         ,"/api/live/product/list", "/api/live/onair", "/api/live/live-info", "/api/live/active", "/stream/watch/**", "/stream/list/**", "/watch/**",
-                                        "/api/watch/insert","/product/product_list","/product/product_list/**","/product/product_detail/**","/record", "/live"
+                                        "/api/watch/insert","/product/product_list","/product/product_list/**","/product/product_detail/**","/record", "/live", "/api/vod/list/**"
                                 ).permitAll()
                                 // ADMIN 전용 URL (두 코드 블록의 ADMIN 관련 URL 병합)
                                 .requestMatchers("/admin/**","/api/live/stop", "/api/live/start", "/api/live/register", "/api/report/updateStatus", "/api/report/register",
@@ -70,7 +70,7 @@ public class SecurityConfig {
                                 // USER 전용 URL (두 코드 블록의 USER 관련 URL 병합)
                                 .requestMatchers(
                                         "/user/**","/api/carts/**", "/api/payments/**", "/api/orders/**", "/api/watch/history/**", "/api/hls/**", "/api/payments/verify",
-                                        "/api/payments/complete", "/api/vod/list/**", "/api/chat/**","/watch/history", "/watch/history/**","/api/watch/history/list","/api/watch/history/list/**", "/cart/**", "/product/product_cart", "/payment/**",
+                                        "/api/payments/complete", "/api/chat/**","/watch/history", "/watch/history/**","/api/watch/history/list","/api/watch/history/list/**", "/cart/**", "/product/product_cart", "/payment/**",
                                         "/product/product_payment", "/success/**", "/payment/success/**"
                                 ).hasAnyRole("USER", "ADMIN")
                                 .anyRequest().authenticated()
