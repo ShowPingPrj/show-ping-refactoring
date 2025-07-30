@@ -32,6 +32,7 @@ public enum ErrorCode {
     // [VOD]
     VOD_LIST_EMPTY(HttpStatus.NOT_FOUND, "VO001", "VOD 목록이 비어있습니다."),
     SUBTITLE_NOT_FOUND(HttpStatus.NOT_FOUND, "VO002", "해당 제목의 자막파일이 존재하지 않습니다."),
+    HLS_CONVERSION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "VO003", "HLS 변환에 실패하였습니다."),
 
     //[시청]
     WATCH_LIST_EMPTY(HttpStatus.NOT_FOUND, "WA001", "시청 내역이 존재하지 않습니다.")
