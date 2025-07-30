@@ -26,8 +26,8 @@ public class WatchRequestDto {
     private Long streamNo;
 
     @Pattern(
-            regexp = "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
-            message = "watchTime은 yyyy-MM-dd'T'HH:mm:ss 포맷이어야 합니다."
+            regexp = "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+            message = "watchTime은 yyyy-MM-dd'T'HH:mm:ss.SSSZ 포맷이어야 합니다."
     )
     private String watchTime;
 

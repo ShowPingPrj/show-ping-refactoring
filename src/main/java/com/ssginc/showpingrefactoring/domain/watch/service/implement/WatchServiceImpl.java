@@ -69,7 +69,7 @@ public class WatchServiceImpl implements WatchService {
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        LocalDateTime dateTime = LocalDateTime.parse(watchRequestDto.getWatchTime(), formatter);
+        LocalDateTime dateTime = LocalDateTime.parse(watchRequestDto.getWatchTime().substring(0, 19), formatter);
 
         // DB 저장을 위한 엔티티 객체 생성 (빌더 패턴)
         Watch watch = Watch.builder()
