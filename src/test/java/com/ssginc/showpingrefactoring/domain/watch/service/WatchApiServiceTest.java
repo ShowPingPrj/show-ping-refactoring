@@ -2,7 +2,11 @@ package com.ssginc.showpingrefactoring.domain.watch.service;
 
 import com.ssginc.showpingrefactoring.common.exception.CustomException;
 import com.ssginc.showpingrefactoring.common.exception.ErrorCode;
+import com.ssginc.showpingrefactoring.domain.member.entity.Member;
+import com.ssginc.showpingrefactoring.domain.stream.entity.Stream;
+import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchRequestDto;
 import com.ssginc.showpingrefactoring.domain.watch.dto.response.WatchResponseDto;
+import com.ssginc.showpingrefactoring.domain.watch.entity.Watch;
 import com.ssginc.showpingrefactoring.domain.watch.repository.WatchRepository;
 import com.ssginc.showpingrefactoring.domain.watch.service.implement.WatchServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -66,4 +72,67 @@ public class WatchApiServiceTest {
 
         assertEquals(ErrorCode.WATCH_LIST_EMPTY.getCode(), ex.getCode());
     }
+
+    // 로그인한 회원의 시청내역 추가
+    @Test
+    public void insertWatchHistory_WhenMemberNoIsExist_SavesAndReturnsWatch() {
+        // given
+        WatchRequestDto requestDto = new WatchRequestDto();
+        requestDto.setStreamNo(123L);
+        requestDto.setWatchTime("2025-07-30T16:00:00");
+
+        Long memberNo = 1L;
+
+        // 기대할 Watch 엔티티 생성 (저장 후 반환값)
+        Watch expectedWatch = Watch.builder()
+                .stream(Stream.builder().streamNo(123L).build())
+                .member(Member.builder().memberNo(memberNo).build())
+                .watchTime(LocalDateTime.parse("2025-07-30T16:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
+                .build();
+
+        when(watchRepository.save(any(Watch.class))).thenReturn(expectedWatch);
+
+        // when
+        Watch result = watchService.insertWatchHistory(requestDto, memberNo);
+
+        // then
+        assertNotNull(result);
+        assertEquals(expectedWatch.getStream().getStreamNo(), result.getStream().getStreamNo());
+        assertEquals(expectedWatch.getMember().getMemberNo(), result.getMember().getMemberNo());
+        assertEquals(expectedWatch.getWatchTime(), result.getWatchTime());
+
+        // watchRepository.save() 가 딱 한번 호출됨 검증
+        verify(watchRepository, times(1)).save(any(Watch.class));
+    }
+
+    // 비로그인한 회원의 시청내역 추가
+    @Test
+    public void insertWatchHistory_WhenMemberNoIsNull_SavesWithNullMember() {
+        // given
+        WatchRequestDto requestDto = new WatchRequestDto();
+        requestDto.setStreamNo(456L);
+        requestDto.setWatchTime("2025-07-30T16:00:00");
+
+        Long memberNo = null;
+
+        Watch expectedWatch = Watch.builder()
+                .stream(Stream.builder().streamNo(456L).build())
+                .member(null)
+                .watchTime(LocalDateTime.parse("2025-07-30T16:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
+                .build();
+
+        when(watchRepository.save(any(Watch.class))).thenReturn(expectedWatch);
+
+        // when
+        Watch result = watchService.insertWatchHistory(requestDto, memberNo);
+
+        // then
+        assertNotNull(result);
+        assertEquals(expectedWatch.getStream().getStreamNo(), result.getStream().getStreamNo());
+        assertNull(result.getMember());
+        assertEquals(expectedWatch.getWatchTime(), result.getWatchTime());
+
+        verify(watchRepository, times(1)).save(any(Watch.class));
+    }
+
 }
