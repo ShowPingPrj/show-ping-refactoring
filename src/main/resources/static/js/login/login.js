@@ -1,3 +1,33 @@
+/* === CSRF auto attach (ES5 safe) === */
+(function () {
+    function getCsrfToken() {
+        var m = document.cookie.match(/(?:^|; )XSRF-TOKEN=([^;]*)/);
+        return m ? decodeURIComponent(m[1]) : null;
+    }
+
+    // fetch에서 필요할 때 꺼내 쓰도록 노출
+    window.__getCsrfToken = getCsrfToken;
+
+    if (typeof window !== 'undefined' && window.axios) {
+        axios.defaults.withCredentials = true; // 모든 axios 요청에 쿠키 포함
+
+        axios.interceptors.request.use(function (config) {
+            var method = (config && config.method ? String(config.method) : 'get').toLowerCase();
+            if (method === 'post' || method === 'put' || method === 'delete' || method === 'patch') {
+                var token = getCsrfToken();
+                if (token) {
+                    config.headers = config.headers || {};
+                    if (!config.headers['X-XSRF-TOKEN']) {
+                        config.headers['X-XSRF-TOKEN'] = token; // CSRF 헤더 자동 첨부
+                    }
+                }
+            }
+            return config;
+        });
+    }
+})();
+
+
 document.addEventListener("DOMContentLoaded", async () => {
     const authButton = document.getElementById("auth-button");
     const authIcon = document.getElementById("auth-icon");
@@ -41,6 +71,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 // 로그인 함수 (현재는 일단 관리자 사용자 할것없이 바로 로그인)
 async function login(event) {
     event.preventDefault();
+
+    await axios.get('/api/csrf', { withCredentials: true });
 
     const memberId = document.getElementById("memberId").value;
     const password = document.getElementById("memberPassword").value;
