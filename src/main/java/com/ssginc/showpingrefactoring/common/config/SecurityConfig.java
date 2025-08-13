@@ -49,7 +49,8 @@ public class SecurityConfig {
                     return config;
                 }))
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/api/auth/login", "/api/auth/logout", "/api/csrf"))
+                        .ignoringRequestMatchers("/api/auth/login", "/api/auth/logout", "/api/csrf", "/api/live/register", "/api/live/live-info", "/api/live/start", "/api/live/stop",
+                                "/api/chat/**", "/api/chatRoom/**", "/ws-stomp-chat/**", "/chat/message"))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 엔드포인트 별 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
@@ -64,10 +65,10 @@ public class SecurityConfig {
                                         "/favicon.ico", "/api/auth/**",  "/api/member/check-duplicate", "/api/member/register",
                                         "/api/member/send-code/**", "/api/member/check-email-duplicate", "/api/member/check-phone-duplicate", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/api/batch/**", "/api/live/standby"
                                         ,"/api/live/product/list", "/api/live/onair", "/api/live/live-info", "/api/live/active", "/stream/watch/**", "/stream/list/**", "/watch/**",
-                                        "/api/watch/insert","/product/product_list","/product/product_list/**","/product/product_detail/**","/record", "/live" , "/api/csrf"
+                                        "/api/watch/insert","/product/product_list","/product/product_list/**","/product/product_detail/**","/record", "/live" , "/api/csrf", "/api/live/register"
                                 ).permitAll()
                                 // ADMIN 전용 URL (두 코드 블록의 ADMIN 관련 URL 병합)
-                                .requestMatchers("/admin/**","/api/live/stop", "/api/live/start", "/api/live/register", "/api/report/updateStatus", "/api/report/register",
+                                .requestMatchers("/admin/**","/api/live/stop", "/api/live/start",  "/api/report/updateStatus", "/api/report/register",
                                         "/api/report/report", "/api/chatRoom/create", "/api/vod/upload", "/api/void/subtitle/**", "/stream/stream", "/report/**", "/api/report/list")
                                 .hasRole("ADMIN")
                                 // USER 전용 URL (두 코드 블록의 USER 관련 URL 병합)
