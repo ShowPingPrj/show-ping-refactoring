@@ -39,58 +39,73 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // CORS 설정: 프로덕션과 로컬 둘 다 허용
+                // CORS 설정
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(List.of("https://showping.duckdns.org", "http://localhost:8080"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    config.setAllowedHeaders(List.of("Authorization", "Content-Type","X-XSRF-TOKEN","X-Requested-With"));
+                    config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-XSRF-TOKEN", "X-Requested-With"));
                     config.setAllowCredentials(true);
                     return config;
                 }))
+                // CSRF: 쿠키 기반 토큰 사용, 특정 엔드포인트는 제외
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/api/auth/login", "/api/auth/logout", "/api/csrf", "/api/live/register", "/api/live/live-info", "/api/live/start", "/api/live/stop",
-                                "/api/chat/**", "/api/chatRoom/**", "/ws-stomp-chat/**", "/chat/message"))
+                        .ignoringRequestMatchers(
+                                "/api/auth/login", "/api/auth/logout", "/api/csrf",
+                                "/api/live/register", "/api/live/live-info", "/api/live/start", "/api/live/stop",
+                                "/api/chat/**", "/api/chatRoom/**", "/ws-stomp-chat/**", "/chat/message"
+                        ))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // 엔드포인트 별 접근 권한 설정
+                // 인가 규칙
                 .authorizeHttpRequests(auth -> auth
-//                                .requestMatchers("/**", "/css/**", "/js/**", "/img/**").permitAll()
-                                // 공개 접근 가능한 URL (두 코드 블록의 permitAll 목록 통합)
-                                .requestMatchers(
-                                        "/", "/login","/login/**","/error","/error/**","/error-page/**", "/webrtc/watch", "/webrtc/watch/**", "/css/**", "/js/**", "/images/**",
-                                        "/img/**", "/assets/**", "/oauth/**", "/api/register", "/api/auth/login", "/api/auth/logout",
-                                        "/api/auth/user-info", "/api/admin/login", "/product/detail/**", "/api/categories/**", "/category/**",
-                                        "/api/products/**", "/api/admin/verify-totp", "/login/signup/**", "/api/member/verify-code",
-                                        "/api/admin/totp-setup/**", "/api/auth/refresh-token-check/**", "/stream/broadcast", "/stream/vod/list/page/**",
-                                        "/favicon.ico", "/api/auth/**",  "/api/member/check-duplicate", "/api/member/register",
-                                        "/api/member/send-code/**", "/api/member/check-email-duplicate", "/api/member/check-phone-duplicate", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/api/batch/**", "/api/live/standby"
-                                        ,"/api/live/product/list", "/api/live/onair", "/api/live/live-info", "/api/live/active", "/stream/watch/**", "/stream/list/**", "/watch/**",
-                                        "/api/watch/insert","/product/product_list","/product/product_list/**","/product/product_detail/**","/record", "/live" , "/api/csrf", "/api/live/register"
-                                ).permitAll()
-                                // ADMIN 전용 URL (두 코드 블록의 ADMIN 관련 URL 병합)
-                                .requestMatchers("/admin/**","/api/live/stop", "/api/live/start",  "/api/report/updateStatus", "/api/report/register",
-                                        "/api/report/report", "/api/chatRoom/create", "/api/vod/upload", "/api/void/subtitle/**", "/stream/stream", "/report/**", "/api/report/list")
-                                .hasRole("ADMIN")
-                                // USER 전용 URL (두 코드 블록의 USER 관련 URL 병합)
-                                .requestMatchers(
-                                        "/user/**","/api/carts/**", "/api/payments/**", "/api/orders/**", "/api/watch/history/**", "/api/hls/**", "/api/payments/verify",
-                                        "/api/payments/complete", "/api/vod/list/**", "/api/chat/**","/watch/history", "/watch/history/**","/api/watch/history/list","/api/watch/history/list/**", "/cart/**", "/product/product_cart", "/payment/**",
-                                        "/product/product_payment", "/success/**", "/payment/success/**"
-                                ).hasAnyRole("USER", "ADMIN")
-                                .anyRequest().authenticated()
+                        // permitAll
+                        .requestMatchers(
+                                "/", "/login","/login/**","/error","/error/**","/error-page/**",
+                                "/webrtc/watch", "/webrtc/watch/**", "/css/**", "/js/**", "/images/**",
+                                "/img/**", "/assets/**", "/oauth/**", "/api/register", "/api/auth/login", "/api/auth/logout",
+                                "/api/auth/user-info", "/api/admin/login", "/product/detail/**", "/api/categories/**", "/category/**",
+                                "/api/products/**", "/api/admin/verify-totp", "/login/signup/**", "/api/member/verify-code",
+                                "/api/admin/totp-setup/**", "/api/auth/refresh-token-check/**", "/stream/broadcast", "/stream/vod/list/page/**",
+                                "/favicon.ico", "/api/auth/**", "/api/member/check-duplicate", "/api/member/register",
+                                "/api/member/send-code/**", "/api/member/check-email-duplicate", "/api/member/check-phone-duplicate",
+                                "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/api/hls/**",
+                                "/api/live/standby", "/api/live/product/list", "/api/live/onair",
+                                "/api/live/live-info", "/api/live/active", "/stream/watch/**", "/stream/list/**",
+                                "/watch/vod/**", "/api/watch/insert", "/product/product_list","/product/product_list/**",
+                                "/product/product_detail/**","/record", "/live", "/api/csrf", "/api/live/register", "/api/vod/list/**", "/api/vod/subtitle/**"
+                        ).permitAll()
+                        // ADMIN
+                        .requestMatchers(
+                                "/admin/**","/api/live/stop", "/api/live/start",
+                                "/api/report/updateStatus", "/api/report/register","/api/batch/**",
+                                "/api/report/report", "/api/chatRoom/create",
+                                "/api/vod/upload", "/api/void/subtitle/**",
+                                "/stream/stream", "/report/**", "/api/report/list"
+                        ).hasRole("ADMIN")
+                        // USER
+                        .requestMatchers(
+                                "/user/**","/api/carts/**", "/api/payments/**", "/api/orders/**",
+                                "/api/watch/history/**", "/api/payments/verify",
+                                "/api/payments/complete", "/api/chat/**",
+                                "/watch/history/**","/api/watch/history/list","/api/watch/history/list/**",
+                                "/cart/**", "/product/product_cart", "/payment/**",
+                                "/product/product_payment", "/success/**", "/payment/success/**"
+                        ).hasAnyRole("USER", "ADMIN")
+                        // 그 외
+                        .anyRequest().authenticated()
                 )
-                // 로그인, 로그아웃 기능 비활성화 (JWT 사용)
+                // 로그인, 로그아웃 disable (JWT)
                 .formLogin(form -> form.disable())
                 .logout(logout -> logout.disable())
-
-                // 예외 처리 핸들러 추가
+                // 예외 처리
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                         .accessDeniedHandler(customAccessDeniedHandler)
                 )
+                // CSRF 쿠키 필터 + JWT 필터
                 .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
-                // JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
         log.info("securityConfig 적용 완료");
         return http.build();
     }
@@ -100,25 +115,21 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // Thymeleaf에서 Security 기능 사용 가능하도록 설정
     @Bean
     public SpringSecurityDialect springSecurityDialect() {
         return new SpringSecurityDialect();
     }
 
-    // 로그인 성공 시 처리 (메인페이지로 리다이렉트)
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> response.sendRedirect("/");
     }
 
-    // 로그아웃 성공 시 처리 (로그아웃 후 로그인 페이지로 이동)
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
         return (request, response, authentication) -> response.sendRedirect("/login");
@@ -130,10 +141,10 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8080", "https://showping.duckdns.org") // 프론트엔드 도메인들
+                        .allowedOrigins("http://localhost:8080", "https://showping.duckdns.org")
                         .allowedMethods("*")
                         .allowedHeaders("*")
-                        .allowCredentials(true); // 중요
+                        .allowCredentials(true);
             }
         };
     }
