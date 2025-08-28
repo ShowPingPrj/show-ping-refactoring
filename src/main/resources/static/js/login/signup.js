@@ -208,7 +208,11 @@ function sendVerificationCode() {
 
     fetch('/api/member/send-code', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'X-XSRF-TOKEN' : window.__getCsrfToken()
+        },
+        credentials: 'include',
         body: JSON.stringify({ email: email })
     })
         .then(response => response.text())

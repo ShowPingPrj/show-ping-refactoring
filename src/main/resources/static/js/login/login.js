@@ -42,6 +42,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function login(event) {
     event.preventDefault();
 
+    await axios.get('/api/csrf', { withCredentials: true });
+
     const memberId = document.getElementById("memberId").value;
     const password = document.getElementById("memberPassword").value;
 

@@ -129,15 +129,15 @@ document.addEventListener("DOMContentLoaded", async function () {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "X-XSRF-TOKEN": window.__getCsrfToken()
                 },
+                credentials: "include",
                 body: JSON.stringify({
                     memberNo: memberNo,
                     totalPrice: totalPrice,
-                    orderItems: selectedItems.map(item => ({
-                        productNo: item.productNo,
-                        quantity: item.quantity,
-                        totalPrice: item.totalPrice
-                    }))
+                    orderItems: selectedItems.map(function (item){
+                        return { productNo: item.productNo, quantity: item.quantity, totalPrice: item.totalPrice };
+                    })
                 }),
             });
 
