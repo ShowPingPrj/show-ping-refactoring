@@ -79,7 +79,7 @@ public class SecurityConfig {
                                 "/admin/**","/api/live/stop", "/api/live/start",
                                 "/api/report/updateStatus", "/api/report/register","/api/batch/**",
                                 "/api/report/report", "/api/chatRoom/create",
-                                "/api/vod/upload", "/api/void/subtitle/**",
+                                "/api/vod/upload", "/api/vod/subtitle/**",
                                 "/stream/stream", "/report/**", "/api/report/list"
                         ).hasRole("ADMIN")
                         // USER
