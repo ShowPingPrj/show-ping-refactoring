@@ -4,7 +4,6 @@ import com.ssginc.showpingrefactoring.common.exception.CustomException;
 import com.ssginc.showpingrefactoring.common.exception.ErrorCode;
 import com.ssginc.showpingrefactoring.infrastructure.NCP.storage.StorageLoader;
 import com.ssginc.showpingrefactoring.domain.stream.service.HlsService;
-import com.ssginc.showpingrefactoring.infrastructure.ffmpeg.HlsMaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +13,14 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author dckat
@@ -35,7 +39,6 @@ public class HlsServiceImpl implements HlsService {
 
     private final StorageLoader storageLoader;
 
-    private final HlsMaker hlsMaker;
 
     /**
      * 영상 제목으로 HLS 생성하여 받아오는 메서드
@@ -80,6 +83,40 @@ public class HlsServiceImpl implements HlsService {
     }
 
     /**
+     * 디렉토리(및 하위 파일들) 안전 삭제 유틸.
+     */
+    private void safeDeleteDirectory(Path dir) {
+        if (dir == null) return;
+        try {
+            if (Files.exists(dir)) {
+                // 파일 -> 디렉토리 역순으로 삭제
+                try (Stream<Path> walk = Files.walk(dir)) {
+                    walk.sorted(Comparator.reverseOrder())
+                            .forEach(p -> {
+                                try { Files.deleteIfExists(p); } catch (IOException ignored) {}
+                            });
+                }
+            }
+            // 상위 hls 폴더가 비면(옵션) 정리하고 싶다면 아래 주석 해제
+            // Path parent = dir.getParent();
+            // if (parent != null && Files.isDirectory(parent) && isEmptyDirectory(parent)) {
+            //     Files.deleteIfExists(parent);
+            // }
+        } catch (IOException ignored) {
+            // TODO: 필요시 로깅
+            // log.warn("Failed to cleanup HLS dir: {}", dir, ignored);
+        }
+    }
+
+    // (옵션) 디렉토리 비었는지 검사 유틸
+    @SuppressWarnings("unused")
+    private boolean isEmptyDirectory(Path dir) throws IOException {
+        try (DirectoryStream<Path> ds = Files.newDirectoryStream(dir)) {
+            return !ds.iterator().hasNext();
+        }
+    }
+
+    /**
      * HLS를 생성하여 NCP에 저장하는 메서드
      * @param title 영상 제목
      * @return HLS 파일 (확장자: m3u8)
@@ -91,25 +128,56 @@ public class HlsServiceImpl implements HlsService {
         File outputFile = new File(dirStr, title + ".m3u8");
         File outputDir = new File(dirStr);
 
-        String ffmpeg = HlsMaker.resolveFFmpegPath();
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
 
-        // FFmpeg를 사용하여 HLS로 변환
-        ProcessBuilder processBuilder = new ProcessBuilder(
-                ffmpeg, "-i", inputFile.getAbsolutePath(),
-                "-codec:", "copy", "-start_number", "0",
-                "-hls_time", "10", "-hls_list_size", "0",
-                "-f", "hls", outputFile.getAbsolutePath()
+        List<String> cmd = Arrays.asList(
+                "ffmpeg",
+                "-y",                        // 기존 파일 덮어쓰기
+                "-i", inputFile.getAbsolutePath(),
+                "-c", "copy",
+                "-start_number", "0",
+                "-hls_time", "10",
+                "-hls_list_size", "0",
+                "-f", "hls",
+                outputFile.getAbsolutePath()
         );
-        Process process = processBuilder.start();
-        int exitCode = process.waitFor();
+
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+        pb.redirectErrorStream(true);
+
+        Process p = pb.start();
+        Thread gobbler = new Thread(() -> {
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(p.getInputStream()))) {
+                while (br.readLine() != null) {
+                    // 필요하면 로그로 남기기
+                }
+            } catch (IOException ignored) {}
+        }, "ffmpeg-output-gobbler");
+        gobbler.start();
+
+        int exitCode = p.waitFor();
+        gobbler.join();
 
         if (exitCode != 0) {
             throw new CustomException(ErrorCode.HLS_CONVERSION_FAILED);
         }
 
         File[] files = outputDir.listFiles();
+        if (files == null || files.length == 0) {
+            // 생성물 없으면 실패로 간주
+            safeDeleteDirectory(outputDir.toPath());
+            throw new CustomException(ErrorCode.HLS_CONVERSION_FAILED);
+        }
 
-        return storageLoader.uploadHlsFiles(files, title);
+        String uploaded = storageLoader.uploadHlsFiles(files, title);
+
+        // 4) 업로드 성공 후 로컬 정리
+        safeDeleteDirectory(outputDir.toPath());
+
+        return uploaded;
     }
 
     /**
