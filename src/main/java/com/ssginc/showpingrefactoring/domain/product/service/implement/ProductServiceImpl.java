@@ -2,15 +2,13 @@ package com.ssginc.showpingrefactoring.domain.product.service.implement;
 
 import com.ssginc.showpingrefactoring.domain.product.dto.object.ProductItemDto;
 import com.ssginc.showpingrefactoring.domain.product.dto.object.ProductDto;
+import com.ssginc.showpingrefactoring.domain.product.dto.response.GetProductListResponseDto;
 import com.ssginc.showpingrefactoring.domain.product.entity.Product;
 import com.ssginc.showpingrefactoring.domain.product.repository.ProductRepository;
 import com.ssginc.showpingrefactoring.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -87,30 +85,60 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    public List<ProductItemDto> getProducts() {
-        try {
-            List<Product> products = productRepository.findAll();
+//    public List<ProductItemDto> getProducts() {
+//        try {
+//            List<Product> products = productRepository.findAll();
+//
+//            if (products.isEmpty()) {
+//                throw new RuntimeException("상품이 없습니다.");
+//            }
+//
+//            return products.stream().map(product -> {
+//                Long productPrice = product.getProductPrice();
+//
+//                return ProductItemDto.builder()
+//                        .productNo(product.getProductNo())
+//                        .productName(product.getProductName())
+//                        .productPrice(productPrice)
+//                        .productImg(product.getProductImg())
+//                        .build();
+//            }).toList();
+//        } catch (RuntimeException e) {
+//            log.error("Exception [Err_Msg]: {}", e.getMessage());
+//            log.error("Exception [Err_Where]: {}", e.getStackTrace()[0]);
+//
+//            return null;
+//        }
+//    }
 
-            if (products.isEmpty()) {
-                throw new RuntimeException("상품이 없습니다.");
-            }
+//    public Page<ProductItemDto> getProducts(int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by("productNo").ascending());
+//
+//        return productRepository.findAll(pageable)
+//                .map(ProductItemDto::fromEntity);
+//    }
 
-            return products.stream().map(product -> {
-                Long productPrice = product.getProductPrice();
+    public GetProductListResponseDto getProducts(Long lastProductNo, int size) {
+        Pageable limit = PageRequest.of(0, size);
 
-                return ProductItemDto.builder()
-                        .productNo(product.getProductNo())
-                        .productName(product.getProductName())
-                        .productPrice(productPrice)
-                        .productImg(product.getProductImg())
-                        .build();
-            }).toList();
-        } catch (RuntimeException e) {
-            log.error("Exception [Err_Msg]: {}", e.getMessage());
-            log.error("Exception [Err_Where]: {}", e.getStackTrace()[0]);
-
-            return null;
+        List<Product> entities;
+        if (lastProductNo == null) {
+            entities = productRepository.findInitial(limit);
+        } else {
+            entities = productRepository.findNext(lastProductNo, limit);
         }
+
+        List<ProductItemDto> data = entities.stream()
+                .map(ProductItemDto::fromEntity)
+                .toList();
+
+        // 다음 마지막 ProductNo
+        Long nextLastProductNo = data.isEmpty() ? null : data.get(data.size() - 1).getProductNo();
+
+        // hasNext 여부 조회 건수가 설정한 size보다 작다면 다음 페이지가 없음
+        boolean hasNext = data.size() == size;
+
+        return new GetProductListResponseDto(data, hasNext, nextLastProductNo);
     }
 
     public List<ProductDto> getTopProductsBySaleQuantity(Long categoryNo) {
