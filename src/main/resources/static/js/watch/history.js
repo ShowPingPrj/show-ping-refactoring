@@ -1,21 +1,42 @@
+let currentPage = 0;
+const pageSize = 10;
+let loading = false;
+let isLast = false;
+
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            loadWatchHistory();
+        }
+    });
+}, {rootMargin: "200px"});
+
 document.addEventListener("DOMContentLoaded", function () {
     loadWatchHistory();
+    observer.observe(document.getElementById("sentinel"));
 });
 
 function loadWatchHistory() {
-    axios.get(`/api/watch/history/list`, {
+    if (loading || isLast) {
+        return;
+    }
+    loading = true;
+
+    axios.get(`/api/watch/history/list/page`, {
+        params: {
+            pageNo: currentPage,
+            pageSize: pageSize,
+            sort: "recent",
+        },
         withCredentials: true // 쿠키 인증 방식
     })
         .then(response => {
-            const historyItems = response.data['historyList'];
+            const {content, pageInfo} = response.data;
             const tableBody = document.querySelector(".history-items tbody");
 
-            tableBody.innerHTML = ""; // 기존 데이터 초기화
-
-            historyItems.forEach(item => {
+            content.forEach(item => {
                 const date = new Date(item.watchTime);
                 const watchDate = date.toLocaleDateString();
-                console.log(watchDate);
                 const row = `
                     <tr>
                         <td class="product-order">
@@ -39,7 +60,7 @@ function loadWatchHistory() {
                     </tr>
                 `;
 
-                tableBody.innerHTML += row;
+                tableBody.insertAdjacentHTML("beforeend", row);
             });
 
             // 동적으로 추가된 시청 버튼에 이벤트 리스너 추가
@@ -51,6 +72,10 @@ function loadWatchHistory() {
                     }
                 });
             });
+
+            currentPage++;
+            isLast = pageInfo.last;
+            loading = false;
         })
         .catch(error => {
             console.error("시청 이력 데이터를 불러오는 중 오류 발생:", error);
