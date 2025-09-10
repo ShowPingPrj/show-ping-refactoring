@@ -1,7 +1,9 @@
 package com.ssginc.showpingrefactoring.domain.watch.controller;
 
+import com.ssginc.showpingrefactoring.common.dto.PageResponseDto;
 import com.ssginc.showpingrefactoring.domain.member.entity.Member;
 import com.ssginc.showpingrefactoring.domain.member.service.MemberService;
+import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchHistoryListRequestDto;
 import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchRequestDto;
 import com.ssginc.showpingrefactoring.domain.watch.entity.Watch;
 import com.ssginc.showpingrefactoring.domain.watch.dto.response.WatchResponseDto;
@@ -17,7 +19,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -58,6 +64,21 @@ public class WatchApiController implements WatchApiSpecification {
         Map<String, Object> result = new HashMap<>();
         result.put("historyList", historyList);
         return ResponseEntity.ok(result);
+    }
+
+    @Override
+    @GetMapping("/history/list/page")
+    public ResponseEntity<?> getWatchHistoryPage(@AuthenticationPrincipal UserDetails userDetails,
+                                                 @ModelAttribute @Valid WatchHistoryListRequestDto watchHistoryListRequestDto) {
+        Member member = memberService.findMemberById(userDetails.getUsername());
+        Long memberNo = member.getMemberNo();
+
+        Pageable pageable = PageRequest.of(
+                watchHistoryListRequestDto.getPageNo(),
+                watchHistoryListRequestDto.getPageSize());
+
+        Page<WatchResponseDto> pageResult = watchService.getWatchHistoryPage(memberNo, pageable);
+        return ResponseEntity.ok(PageResponseDto.of(pageResult));
     }
 
     /**

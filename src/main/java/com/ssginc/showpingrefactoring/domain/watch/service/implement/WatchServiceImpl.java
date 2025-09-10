@@ -11,6 +11,8 @@ import com.ssginc.showpingrefactoring.domain.watch.repository.WatchRepository;
 import com.ssginc.showpingrefactoring.domain.watch.service.WatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,6 +44,11 @@ public class WatchServiceImpl implements WatchService {
             throw new CustomException(ErrorCode.WATCH_LIST_EMPTY);
         }
         return watchList;
+    }
+
+    @Override
+    public Page<WatchResponseDto> getWatchHistoryPage(Long memberNo, Pageable pageable) {
+        return watchRepository.getWatchHistoryPage(memberNo, pageable);
     }
 
     /**

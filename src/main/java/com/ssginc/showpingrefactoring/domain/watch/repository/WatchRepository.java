@@ -2,6 +2,8 @@ package com.ssginc.showpingrefactoring.domain.watch.repository;
 
 import com.ssginc.showpingrefactoring.domain.watch.dto.response.WatchResponseDto;
 import com.ssginc.showpingrefactoring.domain.watch.entity.Watch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -29,5 +31,15 @@ public interface WatchRepository extends JpaRepository<Watch, Long> {
         GROUP BY w.stream.streamNo, s.streamTitle, p.productImg, p.productName, p.productPrice
     """)
     List<WatchResponseDto> getWatchListByMemberNo(Long memberNo);
+
+    @Query("""
+        SELECT new com.ssginc.showpingrefactoring.domain.watch.dto.response.WatchResponseDto
+        (w.stream.streamNo, s.streamTitle, p.productImg, p.productName, p.productPrice, MAX(w.watchTime))
+        FROM Watch w JOIN Stream s ON w.stream.streamNo = s.streamNo
+        JOIN Product p ON s.product.productNo = p.productNo WHERE w.member.memberNo = :memberNo
+        GROUP BY w.stream.streamNo, s.streamTitle, p.productImg, p.productName, p.productPrice
+        ORDER BY MAX(w.watchTime) DESC
+    """)
+    Page<WatchResponseDto> getWatchHistoryPage(Long memberNo, Pageable pageable);
 
 }
