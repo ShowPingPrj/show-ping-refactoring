@@ -4,8 +4,56 @@ let isLast = false;
 
 document.addEventListener("DOMContentLoaded", function () {
     loadWatchHistory();
-    document.getElementById("load-more-btn").addEventListener("click", loadWatchHistory);
+    setFilterButtons();
+    setLoadMoreButton();
 });
+
+function setFilterButtons() {
+    const chips = document.querySelectorAll('.filter-chip-group .chip');
+    const fromInput = document.getElementById('from');
+    const toInput = document.getElementById('to');
+
+    const formatDate = (d) => d.toISOString().slice(0, 10);
+
+    // range 값을 기준으로 시작일/종료일 계산
+    const setPeriod = (range) => {
+        const today = new Date();
+        const end = new Date(today);
+        const start = new Date(today);
+
+        if (range === '7d') {
+            start.setDate(end.getDate() - 6);
+        } else if (range === '1m') {
+            start.setMonth(end.getMonth() - 1);
+        } else if (range === '3m') {
+            start.setMonth(end.getMonth() - 3);
+        } else if (range === '6m') {
+            start.setMonth(end.getMonth() - 6);
+        } else {
+            return; // 직접 입력
+        }
+
+        fromInput.value = formatDate(start);
+        toInput.value = formatDate(end);
+    };
+
+    chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            const range = chip.dataset.range;
+
+            // active 표시 갱신
+            chips.forEach(c => c.classList.remove('is-active'));
+            chip.classList.add('is-active');
+
+            // 날짜 input 값 갱신
+            setPeriod(range);
+        });
+    });
+}
+
+function setLoadMoreButton() {
+    document.getElementById("load-more-btn").addEventListener("click", loadWatchHistory);
+}
 
 function loadWatchHistory() {
     if (isLast) {

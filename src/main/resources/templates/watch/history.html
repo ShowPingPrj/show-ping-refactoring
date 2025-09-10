@@ -18,14 +18,10 @@
 
         <!-- 빠른 기간 버튼 -->
         <div class="filter-chip-group" role="tablist" aria-label="빠른 기간 선택">
-          <button class="chip" role="tab" data-range="7d"
-                  th:classappend="${param.range}=='7d' ? ' is-active' : ''">1주일</button>
-          <button class="chip" role="tab" data-range="1m"
-                  th:classappend="${param.range}=='1m' ? ' is-active' : ''">1개월</button>
-          <button class="chip" role="tab" data-range="3m"
-                  th:classappend="${param.range}=='3m' ? ' is-active' : ''">3개월</button>
-          <button class="chip" role="tab" data-range="6m"
-                  th:classappend="${param.range}=='6m' ? ' is-active' : ''">6개월</button>
+          <button class="chip" role="tab" data-range="7d">1주일</button>
+          <button class="chip" role="tab" data-range="1m">1개월</button>
+          <button class="chip" role="tab" data-range="3m">3개월</button>
+          <button class="chip" role="tab" data-range="6m">6개월</button>
         </div>
 
         <!-- 직접입력 기간 폼 -->
