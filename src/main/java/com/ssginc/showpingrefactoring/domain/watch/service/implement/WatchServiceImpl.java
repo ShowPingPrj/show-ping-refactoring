@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -47,8 +48,16 @@ public class WatchServiceImpl implements WatchService {
     }
 
     @Override
-    public Page<WatchResponseDto> getWatchHistoryPage(Long memberNo, Pageable pageable) {
-        return watchRepository.getWatchHistoryPage(memberNo, pageable);
+    public Page<WatchResponseDto> getWatchHistoryPage(Long memberNo,
+                                                      OffsetDateTime fromDate,
+                                                      OffsetDateTime toDate,
+                                                      Pageable pageable) {
+        LocalDateTime from = null;
+        if (fromDate != null) {
+            from = fromDate.toLocalDateTime();
+        }
+        LocalDateTime to = toDate.toLocalDateTime();
+        return watchRepository.getWatchHistoryPageByMemberAndDate(memberNo, from, to, pageable);
     }
 
     /**

@@ -6,8 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -36,10 +39,14 @@ public interface WatchRepository extends JpaRepository<Watch, Long> {
         SELECT new com.ssginc.showpingrefactoring.domain.watch.dto.response.WatchResponseDto
         (w.stream.streamNo, s.streamTitle, p.productImg, p.productName, p.productPrice, MAX(w.watchTime))
         FROM Watch w JOIN Stream s ON w.stream.streamNo = s.streamNo
-        JOIN Product p ON s.product.productNo = p.productNo WHERE w.member.memberNo = :memberNo
+        JOIN Product p ON s.product.productNo = p.productNo
+        WHERE w.member.memberNo = :memberNo AND (:fromDate IS NULL OR w.watchTime >= :fromDate) AND w.watchTime <= :toDate
         GROUP BY w.stream.streamNo, s.streamTitle, p.productImg, p.productName, p.productPrice
         ORDER BY MAX(w.watchTime) DESC
     """)
-    Page<WatchResponseDto> getWatchHistoryPage(Long memberNo, Pageable pageable);
+    Page<WatchResponseDto> getWatchHistoryPageByMemberAndDate(@Param("memberNo") Long memberNo,
+                                                              @Param("fromDate") LocalDateTime fromDate,
+                                                              @Param("toDate") LocalDateTime toDate,
+                                                              Pageable pageable);
 
 }

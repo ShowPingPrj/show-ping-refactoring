@@ -30,6 +30,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +79,10 @@ public class WatchApiController implements WatchApiSpecification {
                 watchHistoryListRequestDto.getPageNo(),
                 watchHistoryListRequestDto.getPageSize());
 
-        Page<WatchResponseDto> pageResult = watchService.getWatchHistoryPage(memberNo, pageable);
+        Page<WatchResponseDto> pageResult = watchService.getWatchHistoryPage(memberNo,
+                watchHistoryListRequestDto.getFromDate(),
+                watchHistoryListRequestDto.getToDate(),
+                pageable);
         return ResponseEntity.ok(PageResponseDto.of(pageResult));
     }
 

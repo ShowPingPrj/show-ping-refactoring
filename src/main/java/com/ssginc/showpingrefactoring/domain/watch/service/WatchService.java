@@ -6,6 +6,9 @@ import com.ssginc.showpingrefactoring.domain.watch.entity.Watch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface WatchService {
@@ -14,6 +17,9 @@ public interface WatchService {
 
     Watch insertWatchHistory(WatchRequestDto watchRequestDto, Long memberNo);
 
-    Page<WatchResponseDto> getWatchHistoryPage(Long memberNo, Pageable pageable);
+    Page<WatchResponseDto> getWatchHistoryPage(Long memberNo,
+                                               OffsetDateTime fromDate,
+                                               OffsetDateTime toDate,
+                                               Pageable pageable);
 
 }
