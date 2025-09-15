@@ -29,7 +29,7 @@ function setFilterButtons() {
             toDate = toInput.value ? new Date(toInput.value) : new Date();
             fromDate = null;
             fromInput.value = '';
-            toInput.value = formatDate(toDate);
+            toInput.value = '';
             return true;
         }
 
@@ -38,16 +38,13 @@ function setFilterButtons() {
         fromDate = new Date(today);
 
         if (range === '7d') {
-            fromDate.setDate(toDate.getDate() - 6);
+            fromDate.setDate(toDate.getDate() - 7);
         } else if (range === '1m') {
             fromDate.setMonth(toDate.getMonth() - 1);
-            fromDate.setDate(toDate.getDate() + 1);
         } else if (range === '3m') {
             fromDate.setMonth(toDate.getMonth() - 3);
-            fromDate.setDate(toDate.getDate() + 1);
         } else if (range === '6m') {
             fromDate.setMonth(toDate.getMonth() - 6);
-            fromDate.setDate(toDate.getDate() + 1);
         } else {
             return true; // 직접 입력
         }
