@@ -560,8 +560,10 @@ async function uploadFileToNCP() {
 
         // 2) 순차 실행 (403 시 자동 재시도 포함)
         await window.csrfPost('/api/vod/upload', { title: fileName });
-        await window.csrfPost('/api/batch/hls/create', { fileTitle: title });
-        await window.csrfPost('/api/batch/subtitle/create', { fileTitle: title });
+        Promise.all([
+            window.csrfPost('/api/batch/hls/create',     { fileTitle: title }),
+            window.csrfPost('/api/batch/subtitle/create',{ fileTitle: title }),
+        ]).catch(err => console.error('후속 작업 실패:', err));
 
         console.log('업로드 정상적으로 실행 중...');
     } catch (error) {
