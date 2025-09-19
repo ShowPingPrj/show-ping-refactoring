@@ -58,7 +58,7 @@ public class WatchApiController implements WatchApiSpecification {
 
     @Override
     @GetMapping("/history/list/page")
-    public ResponseEntity<?> getWatchHistoryPageV1(@AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<?> getWatchHistoryPage(@AuthenticationPrincipal UserDetails userDetails,
                                                    @ModelAttribute @Valid WatchHistoryListRequestDto watchHistoryListRequestDto) {
         Member member = memberService.findMemberById(userDetails.getUsername());
         Long memberNo = member.getMemberNo();
@@ -73,6 +73,8 @@ public class WatchApiController implements WatchApiSpecification {
                 pageable);
         return ResponseEntity.ok(PageResponseDto.of(pageResult));
     }
+
+    public ResponseEntity<?> getWatchHistoryPageScroll
 
     /**
      * 시청 내역 등록 컨트롤러 메서드

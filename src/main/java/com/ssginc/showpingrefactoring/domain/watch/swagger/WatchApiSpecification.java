@@ -56,7 +56,7 @@ public interface WatchApiSpecification {
             )
     )
     @Parameter(hidden = true)
-    ResponseEntity<?> getWatchHistoryPageV1(@AuthenticationPrincipal UserDetails userDetails,
+    ResponseEntity<?> getWatchHistoryPage(@AuthenticationPrincipal UserDetails userDetails,
                                           @ModelAttribute @Valid WatchHistoryListRequestDto watchHistoryListRequestDto);
 
 
