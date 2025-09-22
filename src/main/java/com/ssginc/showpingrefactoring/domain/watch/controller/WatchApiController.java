@@ -6,7 +6,7 @@ import com.ssginc.showpingrefactoring.domain.member.entity.Member;
 import com.ssginc.showpingrefactoring.domain.member.service.MemberService;
 import com.ssginc.showpingrefactoring.domain.watch.dto.object.WatchHistoryCursor;
 import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchHistoryListRequestDto;
-import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchHistoryListScrollRequstDto;
+import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchHistoryListScrollRequestDto;
 import com.ssginc.showpingrefactoring.domain.watch.dto.request.WatchRequestDto;
 import com.ssginc.showpingrefactoring.domain.watch.entity.Watch;
 import com.ssginc.showpingrefactoring.domain.watch.dto.response.WatchResponseDto;
@@ -92,7 +92,7 @@ public class WatchApiController implements WatchApiSpecification {
      */
     @GetMapping("/history/list/scroll")
     public ResponseEntity<?> getWatchHistoryScroll(@AuthenticationPrincipal UserDetails userDetails,
-                                                   @ModelAttribute @Valid WatchHistoryListScrollRequstDto watchHistoryListScrollRequstDto) {
+                                                   @ModelAttribute @Valid WatchHistoryListScrollRequestDto watchHistoryListScrollRequstDto) {
         Member member = memberService.findMemberById(userDetails.getUsername());
         Long memberNo = member.getMemberNo();
 
@@ -108,7 +108,7 @@ public class WatchApiController implements WatchApiSpecification {
                         watchHistoryListScrollRequstDto.getFromDate(),
                         watchHistoryListScrollRequstDto.getToDate(),
                         cursor,
-                        watchHistoryListScrollRequstDto.getSize());
+                        watchHistoryListScrollRequstDto.getPageSize());
 
         return ResponseEntity.ok(slice);
     }

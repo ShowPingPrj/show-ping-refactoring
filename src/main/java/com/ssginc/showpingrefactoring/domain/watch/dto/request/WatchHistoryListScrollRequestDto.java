@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WatchHistoryListScrollRequstDto {
+public class WatchHistoryListScrollRequestDto {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime fromDate;
@@ -28,6 +28,6 @@ public class WatchHistoryListScrollRequstDto {
     private Long cursorStreamNo;
 
     @NotNull(message = "페이지 크기는 필수입니다.")
-    private int size;
+    private int pageSize;
 
 }
