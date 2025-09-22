@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Getter
@@ -16,14 +17,14 @@ import java.time.OffsetDateTime;
 public class WatchHistoryListScrollRequestDto {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime fromDate;
+    private LocalDateTime fromDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @NotNull(message = "종료일은 필수입니다.")
-    private OffsetDateTime toDate;
+    private LocalDateTime toDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime cursorTime;
+    private LocalDateTime cursorTime;
 
     private Long cursorStreamNo;
 

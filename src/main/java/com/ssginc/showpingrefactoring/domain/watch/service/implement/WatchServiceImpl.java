@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -60,16 +59,15 @@ public class WatchServiceImpl implements WatchService {
      */
     @Override
     public Page<WatchResponseDto> getWatchHistoryPage(Long memberNo,
-                                                      OffsetDateTime fromDate,
-                                                      OffsetDateTime toDate,
+                                                      LocalDateTime fromDate,
+                                                      LocalDateTime toDate,
                                                       Pageable pageable) {
-        LocalDateTime from = null;
-        if (fromDate != null) {
-            from = fromDate.toLocalDateTime();
-        }
-        LocalDateTime to = toDate.toLocalDateTime();
 
-        Page<WatchRowProjection> page = watchRepository.getWatchHistoryPageByMemberAndDate(memberNo, from, to, pageable);
+        Page<WatchRowProjection> page = watchRepository.getWatchHistoryPageByMemberAndDate(memberNo,
+                fromDate,
+                toDate,
+                pageable);
+
         return page.map(p -> new WatchResponseDto(
                 p.getStreamNo(), p.getStreamTitle(),
                 p.getProductImg(), p.getProductName(),
@@ -87,8 +85,8 @@ public class WatchServiceImpl implements WatchService {
      */
     @Override
     public SliceResponseDto<WatchResponseDto, WatchHistoryCursor> getWatchHistoryPageScroll(Long memberNo,
-                                                                                            OffsetDateTime fromDate,
-                                                                                            OffsetDateTime toDate,
+                                                                                            LocalDateTime fromDate,
+                                                                                            LocalDateTime toDate,
                                                                                             WatchHistoryCursor cursor,
                                                                                             int size) {
         /* 윈도우 함수 미적용 커서기반 페이지네이션
@@ -106,14 +104,12 @@ public class WatchServiceImpl implements WatchService {
         // 윈도우 함수 적용 커서기반 페이지네이션
         List<WatchRowProjection> rows = watchRepository.getWatchHistoryPageScrollV2(
                 memberNo,
-                fromDate == null ? null : fromDate.toLocalDateTime(),
-                toDate == null ? null : toDate.toLocalDateTime(),
+                fromDate,
+                toDate,
                 (cursor == null ? null : cursor.watchTime()),
                 (cursor == null ? null : cursor.streamNo()),
                 size+1
         );
-
-        System.out.println(rows.size());
 
         boolean hasMore = rows.size() > size;
         if (hasMore) {

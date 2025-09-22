@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,11 +26,11 @@ public class WatchHistoryListRequestDto {
     private int pageSize;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime fromDate;
+    private LocalDateTime fromDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @NotNull(message = "종료일은 필수입니다.")
-    private OffsetDateTime toDate;
+    private LocalDateTime toDate;
 
     @Pattern(regexp = "^(recent)$", message = "sort는 recent 이어야 합니다.")
     private String sort = "recent";

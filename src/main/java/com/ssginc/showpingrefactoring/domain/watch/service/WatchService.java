@@ -8,9 +8,7 @@ import com.ssginc.showpingrefactoring.domain.watch.entity.Watch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface WatchService {
@@ -20,13 +18,13 @@ public interface WatchService {
     Watch insertWatchHistory(WatchRequestDto watchRequestDto, Long memberNo);
 
     Page<WatchResponseDto> getWatchHistoryPage(Long memberNo,
-                                               OffsetDateTime fromDate,
-                                               OffsetDateTime toDate,
+                                               LocalDateTime fromDate,
+                                               LocalDateTime toDate,
                                                Pageable pageable);
 
     SliceResponseDto<WatchResponseDto, WatchHistoryCursor> getWatchHistoryPageScroll(Long memberNo,
-                                                                                     OffsetDateTime fromDate,
-                                                                                     OffsetDateTime toDate,
+                                                                                     LocalDateTime fromDate,
+                                                                                     LocalDateTime toDate,
                                                                                      WatchHistoryCursor cursor,
                                                                                      int size);
 }

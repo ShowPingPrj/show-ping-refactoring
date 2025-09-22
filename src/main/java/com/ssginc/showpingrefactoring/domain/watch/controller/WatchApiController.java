@@ -23,7 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,11 +96,11 @@ public class WatchApiController implements WatchApiSpecification {
         Member member = memberService.findMemberById(userDetails.getUsername());
         Long memberNo = member.getMemberNo();
 
-        OffsetDateTime cursorTime = watchHistoryListScrollRequstDto.getCursorTime();
+        LocalDateTime cursorTime = watchHistoryListScrollRequstDto.getCursorTime();
         Long cursorStreamNo = watchHistoryListScrollRequstDto.getCursorStreamNo();
 
         WatchHistoryCursor cursor = (cursorTime != null && cursorStreamNo != null)
-                ? new WatchHistoryCursor(cursorTime.toLocalDateTime(), cursorStreamNo)
+                ? new WatchHistoryCursor(cursorTime, cursorStreamNo)
                 : null;
 
         SliceResponseDto<WatchResponseDto, WatchHistoryCursor> slice =
