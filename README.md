@@ -149,39 +149,40 @@ ShowPing은 **실시간 라이브 커머스 플랫폼**으로 오프라인 쇼�
 ---
 ## 9. Key Features (주요 기능)
 
-- **Authentication & Authorization**
+- **Authentication & Authorization (인증/인가)**
   - JWT 기반 로그인/회원가입 (Access + Refresh Token, Redis 저장)
-  - TOTP 기반 2단계 인증 지원
+  - TOTP 기반 2단계 인증 (Google Authenticator 연동)
   - CSRF 토큰 기반 보안 구조 적용
 
-- **Live Streaming**
-  - WebRTC & Kurento 기반 실시간 방송
-  - RTMP/HLS 지원 → 다양한 기기 호환
+- **Live Streaming (라이브 방송)**
+  - WebRTC & Kurento 기반 실시간 방송 송출
+  - RTMP/HLS 지원 → 다양한 기기 호환성 확보
   - 방송 중 실시간 채팅 및 상품 연동
 
-- **Chat System**
-  - STOMP(WebSocket) 기반 실시간 메시징
+- **Chat System (채팅 시스템)**
+  - STOMP(WebSocket) 기반 양방향 메시징
   - Kafka 분산 처리로 안정성 및 확장성 확보
   - MongoDB 저장 및 금칙어 필터링
 
-- **VOD Service**
-  - 방송 종료 후 NCP Object Storage에 저장
+- **VOD Service (다시보기 서비스)**
+  - 방송 종료 후 영상 NCP Object Storage에 저장
   - HLS 인코딩 및 썸네일 생성
   - VOD 다시보기 제공
 
-- **Watch History**
-  - Cursor 기반 페이지네이션으로 대용량 데이터 조회 최적화
-  - 기간 필터 (7일, 1개월, 3개월, 6개월, 커스텀 범위)
-  - 향후 추천 서비스 확장 가능
+- **Watch History (시청 내역)**
+  - Cursor 기반 페이지네이션 → 대용량 데이터에서도 빠른 조회
+  - 기간 필터 (7일, 1개월, 3개월, 6개월, 사용자 지정 범위)
+  - 추천 서비스 확장 가능성
 
-- **Cart & Payment**
+- **Cart & Payment (장바구니 및 결제)**
   - 장바구니 CRUD (추가/삭제/수량 변경)
   - PortOne 결제 모듈 연동
-  - CSRF 보안 적용
+  - CSRF 보안 적용된 REST API
 
-- **Admin & API Docs**
-  - 관리자 방송 관리 기능
-  - Swagger 기반 API 명세 제공
+- **Admin & API Docs (관리자 및 문서화)**
+  - 관리자 방송 관리 기능 (등록/삭제)
+  - Swagger 기반 API 문서 자동 제공
+
 
 ## 10. Performance & Security Improvements (성능 및 보안 개선 포인트)
 
