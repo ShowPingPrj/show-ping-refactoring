@@ -1,4 +1,4 @@
-# ShowPing 📦
+# ShowPing (Refactoring) 📦
 
 ## 1. Overview (프로젝트 개요)
 
@@ -98,7 +98,7 @@ ShowPing은 **실시간 라이브 커머스 플랫폼**으로 오프라인 쇼�
 
 ## 8. Git Convention & Collaboration (깃 컨벤션 & 협업)
 
-### 🔹 Git Branch Naming Rules
+### 🔹 Git Branch Naming Rules (브랜치 네이밍 규칙)
 - **Issue 기반 브랜치 생성**: 새로운 기능 추가나 버그 수정을 시작할 때 먼저 GitHub Issue를 작성하고, 해당 이슈 번호를 브랜치명에 반영
   - 예시: `fix/csrf/70` → CSRF 버그 수정 (이슈 번호: #70)
 - 브랜치 네이밍 규칙:
@@ -106,7 +106,7 @@ ShowPing은 **실시간 라이브 커머스 플랫폼**으로 오프라인 쇼�
   - `fix/버그명/이슈번호` → 버그 수정
   - `refactor/모듈명/이슈번호` → 리팩토링 작업
 
-### 🔹 Pull Request & Code Review
+### 🔹 Pull Request & Code Review (풀 리퀘스트 & 코드 리뷰)
 - 기능 구현 후 **Pull Request(PR)** 생성
 - 팀원들이 PR 코드를 검토하며:
   - 코드 블록을 **드래그하여 코멘트** 작성
@@ -114,13 +114,13 @@ ShowPing은 **실시간 라이브 커머스 플랫폼**으로 오프라인 쇼�
 - **최소 2명 이상의 승인**을 받아야 Merge 가능
 - Merge는 **PR 작성자가 직접 수행**
 
-### 🔹 Knowledge Sharing
+### 🔹 Knowledge Sharing (지식 공유)
 - 개발 중 **도메인 지식, 트러블슈팅 경험** 등을 발견하면 GitHub Issue로 정리 및 공유
 - 이슈는 단순 Task 관리뿐만 아니라 **지식 공유 플랫폼** 역할도 수행
 
 ---
 
-### 🤝 Collaboration Process
+### 🤝 Collaboration Process (협업 프로세스)
 
 ### 📌 During Bootcamp (Original Project)
 - **기간**: 2개월
