@@ -87,12 +87,57 @@ ShowPing은 **실시간 라이브 커머스 플랫폼**으로 오프라인 쇼�
 
 ## 6. Project Architecture (프로젝트 아키텍처 구조)
 
+### 6 - 1. Service Infrastru
 <img width="547" height="406" alt="시스템 아키텍처_라이브_4팀(채팅 기반 라이브 커머스 서비스)" src="https://github.com/user-attachments/assets/5ad938ed-9e31-478c-a681-b963e832bce3" />
+
+- **Ubuntu Private 서버** 위에서 Docker Compose로 전체 서비스 운영  
+- **Nginx**: HTTPS Termination + Reverse Proxy  
+- **Spring Boot (Tomcat)**: 핵심 비즈니스 로직 (WebFlux, Batch 등)  
+- **Kurento Media Server**: WebRTC 기반 실시간 스트리밍 처리  
+- **AWS RDS (MySQL)**: 관계형 데이터 저장소  
+- **NCP Object Storage**: 방송 영상 저장소
+
+---
+
+### 6 - 2. Detailed System Architecture (상세 시스템 아키텍처)
 <img width="4052" height="1802" alt="시스템 아키텍처_전체_4팀(채팅 기반 라이브 스트리밍 서비스)" src="https://github.com/user-attachments/assets/699728c5-c1c9-435c-a263-c46b531d1ae1" />
+
+- **Spring Boot 내부 구성**: Spring Security, JWT, STOMP(WebSocket), WebFlux, Batch, Gradle  
+- **Redis**: Refresh Token 저장소  
+- **Kafka + ZooKeeper**: 채팅 및 메시징 분산 처리  
+- **MongoDB**: 채팅 로그 및 금칙어 저장  
+- **외부 연동 서비스**:  
+  - AWS RDS (MySQL)  
+  - NCP (Clova, Object Storage)  
+  - Google Authenticator (TOTP 2FA)  
+  - PortOne (결제 모듈)  
+- **CI/CD**: GitHub Actions 기반 자동 배포  
+- **협업 툴 & 성능 테스트 툴**: Slack, Figma, Trello, JMeter, nGrinder 등
+
+---
+
+### 6 - 3 Chat & Messaging Flow (채팅 및 메시징 구조)
 <img width="670" height="479" alt="시스템 아키텍처_채팅_4팀(채팅 기반 라이브 커머스 서비스)" src="https://github.com/user-attachments/assets/2c7fde15-2b73-49d3-82ca-6993482d7df6" />
+
+- **Client → Nginx → Spring (JWT 기반 인증)** 요청 흐름  
+- **STOMP/WebSocket**: 클라이언트와 서버 간 실시간 통신  
+- **Kafka + ZooKeeper**: 채팅 메시지 Producer/Consumer 구조  
+- **MongoDB**: 금칙어·채팅 로그 저장  
+- **MySQL**: 회원/상품/권한 관리  
+- **JWT + Spring Security**: 사용자 인증/인가 처리 
+
+---
+
+### 6 - 4 4️⃣ CI/CD Pipeline (배포 파이프라인)
 <img width="508" height="194" alt="시스템_아키텍처_CICD_4팀(채팅 기반 라이브 커머스 서비스)" src="https://github.com/user-attachments/assets/f8114518-bc8a-452e-a6ed-7ff3e329d73c" />
 
+- **개발자 → GitHub**: 코드 Push  
+- **GitHub Actions**: CI/CD Workflow 실행  
+- **SCP 방식 배포**: Build된 `.war` 파일을 Ubuntu 서버의 Tomcat 컨테이너에 전달  
+- **자동 반영**: 컨테이너 내부에서 서비스 구동  
+
 ## 7. ERD & Database Design (ERD 및 데이터베이스 설계)
+
 
 <img width="1450" height="742" alt="ERD_4팀(채팅 기반 라이브 커머스 서비스)" src="https://github.com/user-attachments/assets/913547c4-b2f5-4165-90bb-27776f6bcaf6" />
 
@@ -183,13 +228,81 @@ ShowPing은 **실시간 라이브 커머스 플랫폼**으로 오프라인 쇼�
   - 관리자 방송 관리 기능 (등록/삭제)
   - Swagger 기반 API 문서 자동 제공
 
+## 10. Service Screenshots (서비스 화면 캡처)
 
-## 10. Performance & Security Improvements (성능 및 보안 개선 포인트)
+### 🔹 Main Page (메인 페이지)
 
-## 11. Troubleshooting Cases (트러블슈팅 사례)
+- 사용자가 접속했을 때 처음 보게 되는 메인 화면입니다.
+<p align="center">
+  <img width="1918" height="850" alt="image" src="https://github.com/user-attachments/assets/33a0920e-0665-4f0f-bdb7-b25b1d7e6fcc" />
+</p>
 
-## 12. API Documentation (Swagger) (API 문서 - Swagger)
+### 🔹 Login & Signup (로그인 & 회원가입)
 
-## 13. Service Screenshots (서비스 화면 캡처)
+- 사용자 인증을 위한 로그인 및 회원가입 페이지입니다.
 
-## 14. Demo Video (시연 영상)
+- 로그인 화면
+<p align="center">
+  <img width="1658" height="843" alt="image" src="https://github.com/user-attachments/assets/b185e0c6-a4ed-438a-9914-f643226790dc" />
+</p>
+
+- 회원가입 화면
+<p align="center">
+  <img width="1660" height="868" alt="image" src="https://github.com/user-attachments/assets/cdc0ce2f-680b-4b3a-9648-4c52745bac01" />
+</p>
+
+### 🔹 Live Streaming (라이브 방송)
+
+- 실시간 방송 화면과 채팅창을 함께 볼 수 있는 화면입니다.
+
+- 관리자 페이지
+<p align="center">
+  <img width="950" height="498" alt="image" src="https://github.com/user-attachments/assets/72c5748e-74cc-408f-9665-108fb48c0bdb" />
+</p>
+
+- 유저 페이지
+<p align="center">
+  <img width="957" height="431" alt="image" src="https://github.com/user-attachments/assets/65773446-a515-4fc6-b67f-13bcf93f2889" />
+</p>
+
+### 🔹 Watch History (시청 내역)
+
+- 방송 종료 후 다시보기 페이지입니다.
+<p align="center">
+  <img width="957" height="463" alt="image" src="https://github.com/user-attachments/assets/f7d85b6d-f039-456c-9d81-f8683171193b" />
+
+  <img width="958" height="465" alt="image" src="https://github.com/user-attachments/assets/0f25ef67-36dd-49bd-9171-a7d1eef59505" />
+</p>
+
+### 🔹 Cart & Payment (장바구니 및 결제)
+
+- 장바구니 와 결제 진행 화면입니다.
+<p align="center">
+  <img width="958" height="456" alt="image" src="https://github.com/user-attachments/assets/5b48ea0c-7ea0-4a9c-bc20-6d8ddb73fd1f" />
+  <img width="958" height="464" alt="image" src="https://github.com/user-attachments/assets/f7535f26-0a3b-4476-9ce7-cc32e9af3bad" />
+  <img width="957" height="463" alt="image" src="https://github.com/user-attachments/assets/be4db94b-fcd7-4c6f-bcf6-aa26fcdd755d" />
+  <img width="321" height="320" alt="image" src="https://github.com/user-attachments/assets/3151faa3-9182-4882-b2d9-c561c1ed297e" />
+  <img width="325" height="323" alt="image" src="https://github.com/user-attachments/assets/8f55b437-f26d-449d-bba9-038e6bf30cd2" />
+</p>
+
+### 🔹 Admin Dashboard (관리자 페이지)
+
+- 방송을 등록/삭제할 수 있는 관리자 화면입니다.  
+<p align="center">
+  <img width="958" height="468" alt="image" src="https://github.com/user-attachments/assets/fc66d2ad-8a29-4577-93f5-f7d87452dfe0" />
+</p>
+
+### 🔹 Report Management (신고 관리 페이지)
+
+- 사용자 신고 내역을 관리하고 처리할 수 있는 관리자 화면입니다.
+<p align="center">
+  <img width="956" height="448" alt="image" src="https://github.com/user-attachments/assets/45919db3-0d3d-4bdc-9531-d415141804e2" />
+  <img width="955" height="449" alt="image" src="https://github.com/user-attachments/assets/7b3672f0-169d-4d01-98a1-f77a6a421397" />
+  <img width="958" height="419" alt="image" src="https://github.com/user-attachments/assets/e38b8218-aca8-4813-a503-ffc81eae208f" />
+</p>
+
+
+### 
+
+## 11. Demo Video (시연 영상)
+[전체 시연](https://drive.google.com/file/d/1qRfUPvz5sc0aGOEi5frr-GHMHEO6eOMj/view?usp=drive_link)
