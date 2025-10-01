@@ -13,12 +13,12 @@ ShowPing은 **실시간 라이브 커머스 플랫폼**으로, 오프라인 쇼�
 - **채팅 및 댓글 기반 피드백**으로 고객 만족도를 향상시킵니다.
 - **구매 연동 기능**으로 상품 탐색과 구매 사이의 단계를 단축합니다.
 - **전자제품 카테고리**를 시작으로 수요가 높고 단가가 큰 상품군을 확장합니다.
-- **오프라인 쇼핑 경험 + 실시간 소통**을 결합하여 **차세대 라이브 커머스 생태계**를 구현합니다.
+- **온라인 쇼핑 경험 + 실시간 소통**을 결합하여 **차세대 라이브 커머스 생태계**를 구현합니다.
 
 ---
 
 ## 3. Development Period (개발 기간)
-- 2025.04 ~ 진행 
+- 2025.05 ~ 진행 
 
 ---
 
@@ -91,19 +91,7 @@ ShowPing은 **실시간 라이브 커머스 플랫폼**으로, 오프라인 쇼�
 
 ## 6. Project Architecture (프로젝트 아키텍처 구조)
 
-### 6 - 1. Service Infrastructure Overview (서비스 인프라 개요)
-<img width="547" height="406" alt="시스템 아키텍처_라이브_4팀(채팅 기반 라이브 커머스 서비스)" src="https://github.com/user-attachments/assets/5ad938ed-9e31-478c-a681-b963e832bce3" />
-
-- **Ubuntu Private 서버** 위에서 Docker Compose로 전체 서비스를 운영합니다.
-- **Nginx**는 HTTPS Termination과 Reverse Proxy 역할을 수행합니다.
-- **Spring Boot (Tomcat)**이 핵심 비즈니스 로직(WebFlux, Batch 등)을 처리합니다.
-- **Kurento Media Server**가 WebRTC 기반 실시간 스트리밍을 담당합니다.
-- **AWS RDS (MySQL)**을 관계형 데이터 저장소로 사용합니다.
-- **NCP(Naver Cloud Platform) Object Storage**에 방송 영상을 저장합니다.
-
----
-
-### 6 - 2. Detailed System Architecture (상세 시스템 아키텍처)
+### 6 - 1. Overall System Architecture (전체 아키텍처 구조)
 <img width="4052" height="1802" alt="시스템 아키텍처_전체_4팀(채팅 기반 라이브 스트리밍 서비스)" src="https://github.com/user-attachments/assets/699728c5-c1c9-435c-a263-c46b531d1ae1" />
 
 - **Spring Boot 내부 구성**: Spring Security, JWT, STOMP(WebSocket), WebFlux, Batch, Gradle을 사용합니다.
@@ -113,6 +101,18 @@ ShowPing은 **실시간 라이브 커머스 플랫폼**으로, 오프라인 쇼�
 - **외부 연동 서비스**: AWS RDS(MySQL), NCP Clova·Object Storage, Google Authenticator(TOTP 2FA), PortOne(결제 모듈)과 연동합니다.
 - **CI/CD**는 GitHub Actions로 자동화합니다.
 - 협업/성능 테스트 도구로 Slack, Figma, Trello, JMeter, nGrinder 등을 사용합니다.
+
+---
+
+### 6 - 2. Live Service Architecture (라이브 서비스 아키텍처 구조)
+<img width="547" height="406" alt="시스템 아키텍처_라이브_4팀(채팅 기반 라이브 커머스 서비스)" src="https://github.com/user-attachments/assets/5ad938ed-9e31-478c-a681-b963e832bce3" />
+
+- **Ubuntu Private 서버** 위에서 Docker Compose로 전체 서비스를 운영합니다.
+- **Nginx**는 HTTPS Termination과 Reverse Proxy 역할을 수행합니다.
+- **Spring Boot (Tomcat)**이 핵심 비즈니스 로직(WebFlux, Batch 등)을 처리합니다.
+- **Kurento Media Server**가 WebRTC 기반 실시간 스트리밍을 담당합니다.
+- **AWS RDS (MySQL)**을 관계형 데이터 저장소로 사용합니다.
+- **NCP(Naver Cloud Platform) Object Storage**에 방송 영상을 저장합니다.
 
 ---
 
