@@ -32,7 +32,7 @@ window.authApi.interceptors.request.use(async (config) => {
 // 5) 동시 재발급 1회 보장용
 let _refreshPromise = null;
 
-// 6) 응답 인터셉터: AT 만료(A013)일 때만 재발급
+// 6) 응답 인터셉터: AT 만료(ME014)일 때만 재발급
 window.authApi.interceptors.response.use(
     r => r,
     async (error) => {
@@ -43,13 +43,13 @@ window.authApi.interceptors.response.use(
         if (isReissue || config._skipRefresh) throw error;
 
         const code = response?.data?.code || response?.headers?.['x-error-code'];
-        if (response.status === 401 && code === 'A013' && !config._retry) {
+        if (response.status === 401 && code === 'ME014' && !config._retry) {
             try {
                 config._retry = true;
                 await window.authApi.post('reissue', {}, { _skipRefresh: true });
                 return window.authApi(config); // 원요청 1회 재시도
             } catch (e) {
-                // 실패(M003) → UI만 비로그인 전환 (강제 리다이렉트 X)
+                // 실패(ME004) → UI만 비로그인 전환 (강제 리다이렉트 X)
                 if (typeof setAsLogin === 'function') {
                     const btn  = document.getElementById('auth-button');
                     const icon = document.getElementById('auth-icon');
