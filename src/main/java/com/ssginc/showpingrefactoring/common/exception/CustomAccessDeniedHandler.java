@@ -23,7 +23,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         final String xrw = Optional.ofNullable(request.getHeader("X-Requested-With")).orElse("");
         final String fetchMode = Optional.ofNullable(request.getHeader("Sec-Fetch-Mode")).orElse("");
         final String fetchDest = Optional.ofNullable(request.getHeader("Sec-Fetch-Dest")).orElse("");
-        final String uri = Optional.ofNullable(request.getRequestURI()).orElse("");
 
         final boolean ajax = "XMLHttpRequest".equalsIgnoreCase(xrw);
         final boolean wantsHtml = accept.contains("text/html");
