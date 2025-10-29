@@ -28,7 +28,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         final boolean ajax = "XMLHttpRequest".equalsIgnoreCase(xrw);
         final boolean wantsHtml = accept.contains("text/html");
         final boolean isNavigate = "navigate".equalsIgnoreCase(fetchMode) || "document".equalsIgnoreCase(fetchDest);
-        final boolean apiPrefix = uri.startsWith("/api");
 
         // 📌 규칙
         // 1) 주소창/링크로 들어온 "문서 네비게이션" + HTML 선호 => 403 HTML 페이지로 이동 (API 경로라도 예외)
