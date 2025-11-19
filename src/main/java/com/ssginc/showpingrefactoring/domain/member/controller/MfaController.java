@@ -13,6 +13,9 @@ import com.ssginc.showpingrefactoring.domain.member.service.InviteService;
 import com.ssginc.showpingrefactoring.domain.member.service.TokenService;
 import com.ssginc.showpingrefactoring.domain.member.service.TotpService;
 import com.ssginc.showpingrefactoring.domain.member.service.WebAuthnService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -83,6 +86,15 @@ public class MfaController {
     }
 
     // (기존 관리자 초대 API) MFA + ADMIN 동시 보유 필요
+    @Operation(
+            summary = "관리자 MFA 등록 초대 발급",
+            description = "MFA 권한 및 ADMIN 역할을 모두 가진 관리자가 자신의 계정에 대한 MFA 등록 초대 코드를 발급합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "초대 코드 발급 성공"),
+            @ApiResponse(responseCode = "403", description = "본인 외 계정 초대 시 거부"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
     @PreAuthorize("hasAuthority('MFA') and hasRole('ADMIN')")
     @PostMapping("/enroll/invite")
     public Map<String, String> invite(@RequestBody Map<String, Long> req, Authentication auth) {
@@ -95,6 +107,15 @@ public class MfaController {
     }
 
     // 최초 부트스트랩 또는 정책 허용 시 자기 자신 초대
+    @Operation(
+            summary = "자기 자신 초대 발급",
+            description = "최초 관리자 단말 등록 또는 정책상 허용된 경우, 관리자 본인에 대한 MFA 등록 초대 코드를 발급합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "초대 코드 발급 성공"),
+            @ApiResponse(responseCode = "403", description = "Self-invite 비허용 또는 MFA 재인증 필요"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
     @PostMapping("/enroll/invite/me")
     public Map<String, String> inviteMe(Authentication auth) {
         var me = me(auth);
@@ -119,6 +140,16 @@ public class MfaController {
     }
 
     // 등록 옵션(브라우저 -> navigator.credentials.create)
+    @Operation(
+            summary = "WebAuthn 등록 옵션 조회",
+            description = "초대 코드를 검증한 후, 관리자 단말 등록을 위한 WebAuthn PublicKeyCredential 생성 옵션을 반환합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "등록 옵션 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "초대 코드(inviteId) 누락 또는 유효하지 않음"),
+            @ApiResponse(responseCode = "401", description = "인증 실패"),
+            @ApiResponse(responseCode = "403", description = "초대 대상 불일치")
+    })
     @GetMapping("/enroll/options")
     public Map<String, Object> enrollOptions(Authentication authentication, @RequestParam String inviteId) {
         var me = me(authentication);
@@ -162,6 +193,16 @@ public class MfaController {
     }
 
     // 등록 완료(간이: attestation 검증 스킵, credentialId만 저장)
+    @Operation(
+            summary = "WebAuthn 등록 완료(Attestation)",
+            description = "브라우저에서 생성된 WebAuthn 등록 결과(rawId 등)를 받아 관리자 단말 정보를 저장하고, TOTP 시크릿(otpauth URL)을 발급합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "등록 완료 및 TOTP 정보 발급"),
+            @ApiResponse(responseCode = "400", description = "inviteId 또는 rawId 누락"),
+            @ApiResponse(responseCode = "403", description = "초대 검증 실패"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
     @PostMapping("/enroll/attest")
     public ResponseEntity<?> enrollAttest(Authentication authentication, @RequestBody Map<String, Object> req) {
         try {
@@ -212,6 +253,16 @@ public class MfaController {
     }
 
     // 등록 검증(TOTP)
+    @Operation(
+            summary = "MFA 등록 검증(TOTP)",
+            description = "관리자 단말 등록 후, 발급된 TOTP 코드로 MFA 등록을 최종 검증하고 초대 상태를 완료로 변경합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "TOTP 검증 및 초대 완료 성공"),
+            @ApiResponse(responseCode = "400", description = "totp 또는 inviteId 누락"),
+            @ApiResponse(responseCode = "401", description = "TOTP 검증 실패 또는 인증 실패"),
+            @ApiResponse(responseCode = "429", description = "Rate Limit 초과(요청 제한)")
+    })
     @PostMapping("/enroll/verify")
     public ResponseEntity<?> enrollVerify(Authentication authentication, @RequestBody Map<String, String> req) {
         var me = me(authentication);
@@ -231,12 +282,32 @@ public class MfaController {
     }
 
     // (참고) 인증 옵션/검증 — 기존 로직 유지
+    @Operation(
+            summary = "WebAuthn 인증 옵션 조회",
+            description = "관리자 로그인을 위한 WebAuthn assertion 옵션(인증기 선택, challenge 등)을 반환합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "인증 옵션 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
     @GetMapping("/assertion/options")
     public Map<String, Object> assertionOptions(Authentication authentication) {
         var me = me(authentication);
         return webauthn.assertionOptions(me.getMemberNo());
     }
 
+    @Operation(
+            summary = "MFA 인증(WebAuthn + TOTP)",
+            description = "WebAuthn assertion과 TOTP 코드를 검증한 후, 기존 Refresh Token을 로테이션하고 MFA 정보가 포함된 Access/Refresh Token을 재발급하여 쿠키에 설정합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "MFA 인증 및 토큰 재발급 성공"),
+            @ApiResponse(responseCode = "400", description = "요청 파라미터 누락 또는 형식 오류"),
+            @ApiResponse(responseCode = "401", description = "인증 실패(WebAuthn/TOTP)"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "429", description = "Rate Limit 초과(요청 제한)"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
     @PostMapping("/verify")
     @ResponseBody
     public Map<String, Object> verify(Authentication authentication,
