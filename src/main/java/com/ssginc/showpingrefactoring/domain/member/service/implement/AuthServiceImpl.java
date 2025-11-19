@@ -91,8 +91,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void logoutByRefreshToken(String refreshToken) {
-        redisTokenService.deleteRefreshTokenByRt(refreshToken);
+    public void deleteAllSessions(String memberId) {
+        redisTokenService.deleteAllRefreshTokens(memberId);
     }
-
 }
