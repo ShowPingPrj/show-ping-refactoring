@@ -244,6 +244,8 @@ public class MfaController {
                                       HttpServletResponse response) throws Exception {
 
         var me = me(authentication);
+        String memberId = authentication.getName();
+
         rate.check("verify:" + me.getMemberNo());
 
         // 1) WebAuthn assertion 검증 (네 기존 로직 유지)
@@ -259,7 +261,7 @@ public class MfaController {
         totp.verify(me.getMemberNo(), req.get("totp"));
 
         // 3) RT 로테이션(권장)
-        tokens.rotateRefresh(me.getMemberNo());
+        tokens.rotateRefresh(memberId);
 
         // 4) 최종 AT/RT 발급 (mfa=true, mfa_ts, device_id 클레임 포함)
         var t = tokens.issueMfaTokens(authentication.getPrincipal(), Map.of(
