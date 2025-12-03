@@ -1,5 +1,7 @@
 package com.ssginc.showpingrefactoring.domain.member.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssginc.showpingrefactoring.common.util.CookieUtil;
 import com.ssginc.showpingrefactoring.common.util.MfaPrincipal;
 import com.ssginc.showpingrefactoring.common.util.MfaPrincipalExtractor;
@@ -48,6 +50,7 @@ public class MfaController {
     private final AdminDeviceRepository adminDeviceRepository;
     private final CookieUtil cookieUtil;
     private final MemberMfaRepository memberMfaRepository;
+    private final ObjectMapper objectMapper;
 
     @Value("${webauthn.rp.id:localhost}")
     private String rpId;
@@ -72,7 +75,8 @@ public class MfaController {
                          MemberRepository memberRepo,
                          AdminDeviceRepository adminDeviceRepository,
                          MemberMfaRepository memberMfaRepository,
-                         CookieUtil cookieUtil) {
+                         CookieUtil cookieUtil,
+                         ObjectMapper objectMapper) {
         this.invite = invite;
         this.webauthn = webauthn;
         this.totp = totp;
@@ -84,6 +88,7 @@ public class MfaController {
         this.adminDeviceRepository = adminDeviceRepository;
         this.memberMfaRepository = memberMfaRepository;
         this.cookieUtil = cookieUtil;
+        this.objectMapper = objectMapper;
     }
 
     private MfaPrincipal me(Authentication auth) {
@@ -197,6 +202,17 @@ public class MfaController {
         }
     }
 
+    // 아래 메서드에 challenge 문자열 추출
+    private String extractChallengeFromClientData(byte[] clientDataJSON) {
+        try {
+            String json = new String(clientDataJSON, StandardCharsets.UTF_8);
+            JsonNode node = objectMapper.readTree(json);
+            return node.get("challenge").asText();
+        } catch (Exception e) {
+            throw new IllegalStateException("clientDataJSON 파싱 실패", e);
+        }
+    }
+
     // 등록 완료(간이: attestation 검증 스킵, credentialId만 저장)
     @Operation(
             summary = "WebAuthn 등록 완료(Attestation)",
@@ -219,6 +235,34 @@ public class MfaController {
                         .body(Map.of("code", "BAD_REQUEST", "message", "inviteId 없음"));
             }
             invite.validate(me.getMemberNo(), inviteId);
+
+            // 1. 클라이언트가 보낸 clientDataJSON(Base64URL) 추출
+            String clientDataJSONB64 = Objects.toString(req.get("clientDataJSONB64"), null);
+            if (clientDataJSONB64 == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("code", "BAD_REQUEST", "message", "clientDataJSON 없음"));
+            }
+            byte[] clientDataJSON = b64url(clientDataJSONB64);
+
+            // 2) Redis에서 등록용 regchal 조회
+            String key = redisPrefix + "webauthn:regchal:" + me.getMemberNo();
+            String expectedChal = redis.opsForValue().get(key);
+            if (expectedChal == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("code", "CHALLENGE_EXPIRED", "message", "등록용 challenge가 만료되었거나 존재하지 않습니다."));
+            }
+
+            // 3) clientDataJSON 안 challenge 추출
+            String clientChallenge = extractChallengeFromClientData(clientDataJSON);
+
+            // 4) regchal 은 한 번만 사용하도록 즉시 삭제
+            redis.delete(key);
+
+            // 5) 서버가 발급한 regchal과 일치하는지 확인
+            if (!expectedChal.equals(clientChallenge)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("code", "CHALLENGE_MISMATCH", "message", "등록용 WebAuthn challenge 불일치"));
+            }
 
             // 프론트가 id/rawId 중 무엇을 보내든 수용
             String rawIdB64 = Objects.toString(req.getOrDefault("rawId", req.get("id")), null);
